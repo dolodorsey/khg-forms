@@ -211,27 +211,28 @@ export default function FormPage() {
     setSubmitting(false);
   };
 
-  if (loading) return <div style={{ minHeight: "100vh", background: "#0A0A0A", display: "flex", alignItems: "center", justifyContent: "center", color: "#D4A853", fontFamily: "'DM Sans',sans-serif", fontSize: 14, letterSpacing: 3 }}>LOADING...</div>;
-  if (!config) return <div style={{ minHeight: "100vh", background: "#0A0A0A", display: "flex", alignItems: "center", justifyContent: "center", color: "#FF6B6B", fontFamily: "'DM Sans',sans-serif", fontSize: 16, flexDirection: "column", gap: 12 }}><div>FORM NOT FOUND</div><a href="/" style={{ color: "#D4A853", fontSize: 13 }}>← Back to Directory</a></div>;
+  if (loading) return <div style={{ minHeight: "100vh", background: "#FAFAF8", display: "flex", alignItems: "center", justifyContent: "center", color: C, fontFamily: "'DM Sans',sans-serif", fontSize: 14, letterSpacing: 3 }}>LOADING...</div>;
+  if (!config) return <div style={{ minHeight: "100vh", background: "#FAFAF8", display: "flex", alignItems: "center", justifyContent: "center", color: "#E74C3C", fontFamily: "'DM Sans',sans-serif", fontSize: 16, flexDirection: "column", gap: 12 }}><div>FORM NOT FOUND</div><a href="/" style={{ color: C, fontSize: 13 }}>← Back to Directory</a></div>;
 
   const C = config.brand_color || "#D4A853";
   const roleFields = ROLE_FIELDS[roleType] || [];
 
   const S = {
-    root: { fontFamily: "'DM Sans',sans-serif", background: "#0A0A0A", color: "#F0EDE6", minHeight: "100vh" },
+    root: { fontFamily: "'DM Sans',sans-serif", background: "#FAFAF8", color: "#1A1A1A", minHeight: "100vh" },
     container: { maxWidth: 640, margin: "0 auto", padding: "40px 20px 80px" },
-    header: { textAlign: "center", marginBottom: 36 },
-    card: { background: "rgba(255,255,255,0.03)", border: `1px solid ${C}20`, borderRadius: 14, padding: "28px 24px", marginBottom: 20, backdropFilter: "blur(12px)" },
-    label: { display: "block", fontSize: 10, letterSpacing: 2.5, textTransform: "uppercase", color: "#888", marginBottom: 6, fontWeight: 700 },
-    input: { width: "100%", padding: "12px 14px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8, color: "#F0EDE6", fontSize: 14, outline: "none", fontFamily: "inherit", boxSizing: "border-box" },
-    select: { width: "100%", padding: "12px 14px", background: "#141414", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8, color: "#F0EDE6", fontSize: 14, outline: "none", fontFamily: "inherit", appearance: "none", cursor: "pointer" },
-    textarea: { width: "100%", padding: "12px 14px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8, color: "#F0EDE6", fontSize: 14, outline: "none", fontFamily: "inherit", minHeight: 80, resize: "vertical", boxSizing: "border-box" },
+    header: { textAlign: "center", marginBottom: 36, paddingTop: 12 },
+    card: { background: "#FFFFFF", border: "1px solid #E8E4DE", borderRadius: 16, padding: "28px 24px", marginBottom: 20, boxShadow: "0 2px 12px rgba(0,0,0,0.04)" },
+    label: { display: "block", fontSize: 10, letterSpacing: 2.5, textTransform: "uppercase", color: "#999", marginBottom: 6, fontWeight: 700 },
+    input: { width: "100%", padding: "13px 14px", background: "#FAFAF8", border: "1px solid #E0DCD5", borderRadius: 10, color: "#1A1A1A", fontSize: 14, outline: "none", fontFamily: "inherit", boxSizing: "border-box", transition: "border-color 0.2s" },
+    select: { width: "100%", padding: "13px 14px", background: "#FAFAF8", border: "1px solid #E0DCD5", borderRadius: 10, color: "#1A1A1A", fontSize: 14, outline: "none", fontFamily: "inherit", appearance: "none", cursor: "pointer", boxSizing: "border-box" },
+    textarea: { width: "100%", padding: "13px 14px", background: "#FAFAF8", border: "1px solid #E0DCD5", borderRadius: 10, color: "#1A1A1A", fontSize: 14, outline: "none", fontFamily: "inherit", minHeight: 80, resize: "vertical", boxSizing: "border-box" },
     row: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 },
     field: { marginBottom: 16 },
-    chip: (a) => ({ display: "inline-block", padding: "6px 14px", borderRadius: 16, fontSize: 11, fontWeight: 600, cursor: "pointer", margin: "0 6px 6px 0", background: a ? `${C}25` : "rgba(255,255,255,0.04)", border: a ? `1px solid ${C}60` : "1px solid rgba(255,255,255,0.06)", color: a ? C : "#888", transition: "all 0.2s", userSelect: "none" }),
-    btn: { width: "100%", padding: "16px", background: `linear-gradient(135deg, ${C}, ${C}CC)`, border: "none", borderRadius: 10, color: "#0A0A0A", fontSize: 14, fontWeight: 800, letterSpacing: 2, textTransform: "uppercase", cursor: "pointer", fontFamily: "inherit" },
+    chip: (a) => ({ display: "inline-block", padding: "7px 16px", borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: "pointer", margin: "0 6px 8px 0", background: a ? `${C}18` : "#F5F3EF", border: a ? `2px solid ${C}` : "1px solid #E0DCD5", color: a ? C : "#888", transition: "all 0.2s", userSelect: "none" }),
+    btn: { width: "100%", padding: "16px", background: C, border: "none", borderRadius: 12, color: "#FFFFFF", fontSize: 14, fontWeight: 800, letterSpacing: 2, textTransform: "uppercase", cursor: "pointer", fontFamily: "inherit", boxShadow: `0 4px 16px ${C}40` },
     err: { fontSize: 10, color: "#E74C3C", marginTop: 3 },
     sectionTitle: { fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: C, marginBottom: 16, fontWeight: 700 },
+    logoWrap: { display: "inline-block", padding: 16, borderRadius: 16, background: "#111", marginBottom: 16 },
   };
 
   const Field = ({ label, name, type="text", required, options, isRole }) => {
@@ -254,15 +255,15 @@ export default function FormPage() {
       <div style={S.root}>
         <div style={S.container}>
           <div style={S.header}>
-            {config.logo_url && <img src={config.logo_url} alt="" style={{ height: 60, objectFit: "contain", marginBottom: 16, filter: `drop-shadow(0 4px 16px ${C}40)` }} />}
+            {config.logo_url && <div style={S.logoWrap}><img src={config.logo_url} alt="" style={{ height: 50, objectFit: "contain", display: "block" }} /></div>}
           </div>
-          <div style={{ ...S.card, border: `1px solid ${C}40` }}>
+          <div style={{ ...S.card, border: `2px solid ${C}30` }}>
             <div style={{ fontSize: 10, letterSpacing: 3, color: C, fontWeight: 700, marginBottom: 8 }}>STEP {step + 1} OF {postSignup.length}</div>
-            <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 16, color: "#F0EDE6" }}>{ps.instruction_title}</div>
-            <div style={{ fontSize: 14, color: "#CCC", lineHeight: 1.8, whiteSpace: "pre-line" }}>{ps.instruction_body?.replace(/\*\*(.*?)\*\*/g, "$1")}</div>
+            <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 16, color: "#1A1A1A" }}>{ps.instruction_title}</div>
+            <div style={{ fontSize: 14, color: "#555", lineHeight: 1.8, whiteSpace: "pre-line" }}>{ps.instruction_body?.replace(/\*\*(.*?)\*\*/g, "$1")}</div>
           </div>
           <div style={{ display: "flex", gap: 12 }}>
-            {step > 0 && <button onClick={() => setStep(s => s - 1)} style={{ ...S.btn, background: "transparent", border: `1px solid ${C}40`, color: C, flex: "0 0 auto", width: "auto", padding: "14px 24px" }}>← BACK</button>}
+            {step > 0 && <button onClick={() => setStep(s => s - 1)} style={{ ...S.btn, background: "#FFF", border: `1px solid ${C}`, color: C, boxShadow: "none", flex: "0 0 auto", width: "auto", padding: "14px 24px" }}>← BACK</button>}
             <button onClick={() => isLast ? (window.location.href = "/") : setStep(s => s + 1)} style={{ ...S.btn, flex: 1 }}>
               {isLast ? "DONE — RETURN HOME" : `NEXT → STEP ${step + 2}`}
             </button>
@@ -276,10 +277,10 @@ export default function FormPage() {
   if (submitted) return (
     <div style={S.root}>
       <div style={{ ...S.container, textAlign: "center", paddingTop: 80 }}>
-        {config.logo_url && <img src={config.logo_url} alt="" style={{ height: 60, objectFit: "contain", marginBottom: 20, filter: `drop-shadow(0 4px 16px ${C}40)` }} />}
-        <div style={{ fontSize: 28, fontWeight: 800, marginBottom: 12 }}>APPLICATION RECEIVED</div>
-        <div style={{ fontSize: 15, color: "#888", lineHeight: 1.7, maxWidth: 400, margin: "0 auto" }}>
-          Thank you, <strong style={{color:"#F0EDE6"}}>{form.first_name}</strong>. We've received your <strong style={{color:C}}>{roleType.replace(/_/g," ")}</strong> application. Our team will review and follow up.
+        {config.logo_url && <div style={{...S.logoWrap, margin: "0 auto 20px"}}><img src={config.logo_url} alt="" style={{ height: 50, objectFit: "contain", display: "block" }} /></div>}
+        <div style={{ fontSize: 28, fontWeight: 800, marginBottom: 12, color: "#1A1A1A" }}>APPLICATION RECEIVED</div>
+        <div style={{ fontSize: 15, color: "#666", lineHeight: 1.7, maxWidth: 400, margin: "0 auto" }}>
+          Thank you, <strong style={{color:"#1A1A1A"}}>{form.first_name}</strong>. We've received your <strong style={{color:C}}>{roleType.replace(/_/g," ")}</strong> application. Our team will review and follow up.
         </div>
         <a href="/" style={{ display: "inline-block", marginTop: 32, color: C, fontSize: 13, letterSpacing: 2, textTransform: "uppercase", textDecoration: "none" }}>← BACK TO DIRECTORY</a>
       </div>
@@ -292,7 +293,7 @@ export default function FormPage() {
       <div style={S.container}>
         {/* HEADER */}
         <div style={S.header}>
-          {config.logo_url && <img src={config.logo_url} alt="" style={{ height: 70, objectFit: "contain", marginBottom: 12, filter: `drop-shadow(0 4px 20px ${C}30)` }} />}
+          {config.logo_url && <div style={S.logoWrap}><img src={config.logo_url} alt="" style={{ height: 56, objectFit: "contain", display: "block" }} /></div>}
           <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: -0.5, marginBottom: 6 }}>{config.form_title}</div>
           {config.form_subtitle && <div style={{ fontSize: 13, color: "#888" }}>{config.form_subtitle}</div>}
         </div>

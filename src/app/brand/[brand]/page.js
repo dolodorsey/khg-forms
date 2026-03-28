@@ -64,12 +64,14 @@ export default function BrandLanding() {
   const brandName = forms[0]?.form_title?.split("—")[0]?.trim() || brandSlug?.replace(/-/g, " ").toUpperCase();
 
   return (
-    <div style={{ fontFamily: "'DM Sans',sans-serif", background: "#0A0A0A", color: "#F0EDE6", minHeight: "100vh", padding: "48px 20px 80px" }}>
+    <div style={{ fontFamily: "'DM Sans',sans-serif", background: "#FAFAF8", color: "#1A1A1A", minHeight: "100vh", padding: "48px 20px 80px" }}>
       {/* Header with logo */}
       <div style={{ textAlign: "center", marginBottom: 48 }}>
         {logo && (
           <a href={website} target="_blank" rel="noopener noreferrer">
-            <img src={logo} alt={brandName} style={{ height: 80, objectFit: "contain", marginBottom: 20, filter: `drop-shadow(0 4px 24px ${C}40)`, cursor: "pointer" }} />
+            <div style={{ display: "inline-block", padding: 20, borderRadius: 20, background: "#111", marginBottom: 20 }}>
+              <img src={logo} alt={brandName} style={{ height: 70, objectFit: "contain", display: "block", cursor: "pointer" }} />
+            </div>
           </a>
         )}
         <div style={{ fontSize: 11, letterSpacing: 5, color: C, fontWeight: 700, textTransform: "uppercase", marginBottom: 8 }}>
@@ -91,19 +93,19 @@ export default function BrandLanding() {
             href={`/${brandSlug}/${f.role_type}`}
             style={{
               display: "flex", alignItems: "center", gap: 16, padding: "20px 24px",
-              borderRadius: 14, background: "rgba(255,255,255,0.03)",
-              border: `1px solid ${C}20`, marginBottom: 12,
+              borderRadius: 14, background: "#FFFFFF",
+              border: `1px solid #E8E4DE`, marginBottom: 12,
               textDecoration: "none", transition: "all 0.2s",
-              cursor: "pointer",
+              cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
             }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = `${C}60`; e.currentTarget.style.background = `${C}08`; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = `${C}20`; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = C; e.currentTarget.style.boxShadow = `0 4px 16px ${C}20`; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "#E8E4DE"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.04)"; }}
           >
             <div style={{ fontSize: 28, width: 48, textAlign: "center", flexShrink: 0 }}>
               {ROLE_ICONS[f.role_type] || "📋"}
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 16, fontWeight: 700, color: "#F0EDE6", marginBottom: 4 }}>
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#1A1A1A", marginBottom: 4 }}>
                 {ROLE_LABELS[f.role_type] || f.role_type.replace(/_/g, " ").toUpperCase()}
               </div>
               <div style={{ fontSize: 12, color: "#888" }}>
@@ -120,7 +122,7 @@ export default function BrandLanding() {
         <a href={website} target="_blank" rel="noopener noreferrer" style={{
           display: "inline-flex", alignItems: "center", gap: 8,
           padding: "12px 24px", borderRadius: 10,
-          border: `1px solid ${C}30`, background: `${C}08`,
+          border: `1px solid ${C}`, background: "#FFF",
           color: C, fontSize: 12, fontWeight: 700, letterSpacing: 2,
           textTransform: "uppercase", textDecoration: "none",
         }}>
@@ -129,7 +131,7 @@ export default function BrandLanding() {
       </div>
 
       {/* Footer */}
-      <div style={{ textAlign: "center", marginTop: 48, fontSize: 9, letterSpacing: 4, color: "#333", textTransform: "uppercase" }}>
+      <div style={{ textAlign: "center", marginTop: 48, fontSize: 9, letterSpacing: 4, color: "#CCC", textTransform: "uppercase" }}>
         THE KOLLECTIVE HOSPITALITY GROUP
       </div>
     </div>

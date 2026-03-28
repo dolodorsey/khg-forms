@@ -15,7 +15,7 @@ export default function Home() {
   const grouped = {};
   filtered.forEach(c => { if (!grouped[c.brand_key]) grouped[c.brand_key] = []; grouped[c.brand_key].push(c); });
   const S = {
-    root: { fontFamily: "'DM Sans', sans-serif", background: "#0A0A0A", color: "#F0EDE6", minHeight: "100vh", padding: "40px 20px" },
+    root: { fontFamily: "'DM Sans', sans-serif", background: "#FAFAF8", color: "#1A1A1A", minHeight: "100vh", padding: "40px 20px" },
     header: { textAlign: "center", marginBottom: 40 },
     title: { fontSize: 32, fontWeight: 800, letterSpacing: -1, background: "linear-gradient(135deg, #F0EDE6, #D4A853)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" },
     sub: { fontSize: 14, color: "#888", marginTop: 8 },
@@ -24,8 +24,8 @@ export default function Home() {
     brandSection: { marginBottom: 32 },
     brandTitle: { fontSize: 13, letterSpacing: 3, fontWeight: 700, textTransform: "uppercase", marginBottom: 12, paddingLeft: 4 },
     grid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 },
-    card: (color) => ({ display: "block", padding: "16px 20px", borderRadius: 12, background: "rgba(255,255,255,0.03)", border: `1px solid ${color}30`, textDecoration: "none", transition: "all 0.2s" }),
-    cardTitle: { fontSize: 15, fontWeight: 700, color: "#F0EDE6", marginBottom: 4 },
+    card: (color) => ({ display: "block", padding: "16px 20px", borderRadius: 12, background: "#FFFFFF", border: `1px solid ${color}30`, textDecoration: "none", transition: "all 0.2s" }),
+    cardTitle: { fontSize: 15, fontWeight: 700, color: "#1A1A1A", marginBottom: 4 },
     cardSub: (color) => ({ fontSize: 11, color, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase" }),
   };
   return (
