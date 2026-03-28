@@ -211,8 +211,8 @@ export default function FormPage() {
     setSubmitting(false);
   };
 
-  if (loading) return <div style={{ minHeight: "100vh", background: "#FAFAF8", display: "flex", alignItems: "center", justifyContent: "center", color: C, fontFamily: "'DM Sans',sans-serif", fontSize: 14, letterSpacing: 3 }}>LOADING...</div>;
-  if (!config) return <div style={{ minHeight: "100vh", background: "#FAFAF8", display: "flex", alignItems: "center", justifyContent: "center", color: "#E74C3C", fontFamily: "'DM Sans',sans-serif", fontSize: 16, flexDirection: "column", gap: 12 }}><div>FORM NOT FOUND</div><a href="/" style={{ color: C, fontSize: 13 }}>← Back to Directory</a></div>;
+  if (loading) return <div style={{ minHeight: "100vh", background: "#FAFAF8", display: "flex", alignItems: "center", justifyContent: "center", color: "#D4A853", fontFamily: "'DM Sans',sans-serif", fontSize: 14, letterSpacing: 3 }}>LOADING...</div>;
+  if (!config) return <div style={{ minHeight: "100vh", background: "#FAFAF8", display: "flex", alignItems: "center", justifyContent: "center", color: "#E74C3C", fontFamily: "'DM Sans',sans-serif", fontSize: 16, flexDirection: "column", gap: 12 }}><div>FORM NOT FOUND</div><a href="/" style={{ color: "#D4A853", fontSize: 13 }}>← Back to Directory</a></div>;
 
   const C = config.brand_color || "#D4A853";
   const roleFields = ROLE_FIELDS[roleType] || [];
