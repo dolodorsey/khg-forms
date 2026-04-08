@@ -119,6 +119,16 @@ const ROLE_FIELDS = {
     {key:"salary_expectation",label:"SALARY EXPECTATION",type:"text"},
     {key:"start_date",label:"AVAILABLE START DATE",type:"text"},
   ],
+  nda: [
+    {key:"company_name",label:"COMPANY / ORGANIZATION NAME",type:"text"},
+    {key:"title",label:"YOUR TITLE / POSITION",type:"text"},
+    {key:"address",label:"MAILING ADDRESS",type:"textarea"},
+    {key:"purpose",label:"PURPOSE OF NDA",type:"textarea",required:true},
+    {key:"relationship_type",label:"RELATIONSHIP TYPE",type:"select",options:["Vendor","Contractor","Partner","Employee","Intern","Consultant","Investor","Other"]},
+    {key:"duration",label:"CONFIDENTIALITY PERIOD",type:"select",options:["1 Year","2 Years","3 Years","5 Years","Indefinite"]},
+    {key:"signature",label:"TYPE FULL LEGAL NAME AS SIGNATURE",type:"text",required:true},
+    {key:"date_signed",label:"DATE",type:"text",required:true},
+  ],
 };
 
 export default function FormPage() {
