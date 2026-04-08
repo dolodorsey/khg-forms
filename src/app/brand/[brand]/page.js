@@ -31,12 +31,13 @@ const ROLE_LABELS = {
   ambassador: "Ambassador Program",
   intern: "Internship Application",
   applicant: "Career Application",
+  nda: "NDA Agreement",
 };
 
 const ROLE_ICONS = {
   dj: "🎧", volunteer: "🤝", influencer: "📱", vendor: "🏪", artist: "🎨",
   blogger: "📰", sponsor: "💎", model: "📸", promoter: "📣", photographer: "📷",
-  ambassador: "⭐", intern: "🎓", applicant: "💼",
+  ambassador: "⭐", intern: "🎓", applicant: "💼", nda: "📋",
 };
 
 export default function BrandLanding() {
