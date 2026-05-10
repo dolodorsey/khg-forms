@@ -144,6 +144,10 @@ export default function FormPage() {
   const [submitted, setSubmitted] = useState(false);
   const [step, setStep] = useState(0); // 0=post-signup step tracker
   const [errors, setErrors] = useState({});
+  const [signatureCanvasRef] = useState(() => ({ current: null }));
+  const [hasDrawnSignature, setHasDrawnSignature] = useState(false);
+  const [acknowledgmentChecked, setAcknowledgmentChecked] = useState(false);
+  const [scrolledToBottom, setScrolledToBottom] = useState(false);
 
   const [form, setForm] = useState({
     first_name:"",last_name:"",email:"",phone:"",city:"",
@@ -184,8 +188,54 @@ export default function FormPage() {
     else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = "Invalid email";
     if (!form.phone.trim()) e.phone = "Required";
     if (!form.city) e.city = "Required";
+    // NDA-specific validation: require ack + signature when applicable
+    if (config?.requires_acknowledgment && !acknowledgmentChecked) e.acknowledgment = "You must acknowledge that you have read the agreement";
+    if (config?.requires_signature_canvas && !hasDrawnSignature) e.drawn_signature = "Please draw your signature";
+    if (roleType === "nda" && !(form.role_data?.signature || "").trim()) e.typed_signature = "Type your full legal name";
     setErrors(e);
     return Object.keys(e).length === 0;
+  };
+
+  // Capture drawn signature from canvas
+  const setupSignatureCanvas = (canvas) => {
+    if (!canvas || canvas._initialized) return;
+    canvas._initialized = true;
+    signatureCanvasRef.current = canvas;
+    const ctx = canvas.getContext("2d");
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "#1A1A1A";
+    let drawing = false;
+    const getXY = (e) => {
+      const r = canvas.getBoundingClientRect();
+      const t = e.touches ? e.touches[0] : e;
+      return [t.clientX - r.left, t.clientY - r.top];
+    };
+    const start = (e) => { e.preventDefault(); drawing = true; const [x,y] = getXY(e); ctx.beginPath(); ctx.moveTo(x,y); };
+    const move = (e) => { if (!drawing) return; e.preventDefault(); const [x,y] = getXY(e); ctx.lineTo(x,y); ctx.stroke(); setHasDrawnSignature(true); };
+    const end = () => { drawing = false; };
+    canvas.addEventListener("mousedown", start);
+    canvas.addEventListener("mousemove", move);
+    canvas.addEventListener("mouseup", end);
+    canvas.addEventListener("mouseleave", end);
+    canvas.addEventListener("touchstart", start, { passive: false });
+    canvas.addEventListener("touchmove", move, { passive: false });
+    canvas.addEventListener("touchend", end);
+  };
+
+  const clearSignatureCanvas = () => {
+    const c = signatureCanvasRef.current;
+    if (!c) return;
+    c.getContext("2d").clearRect(0, 0, c.width, c.height);
+    setHasDrawnSignature(false);
+  };
+
+  // Track scroll-to-bottom on the legal document viewer
+  const handleDocScroll = (e) => {
+    const el = e.currentTarget;
+    if (el.scrollHeight - el.scrollTop - el.clientHeight < 20 && !scrolledToBottom) {
+      setScrolledToBottom(true);
+    }
   };
 
   const handleSubmit = async () => {
@@ -197,6 +247,13 @@ export default function FormPage() {
         role_type: roleType,
         ...form,
         role_data: JSON.stringify(form.role_data),
+        signature_typed: form.role_data?.signature || null,
+        signature_drawn_data_url: hasDrawnSignature && signatureCanvasRef.current ? signatureCanvasRef.current.toDataURL("image/png") : null,
+        acknowledgment_accepted: acknowledgmentChecked,
+        legal_document_version: config?.legal_document_title ? `v1_${config.legal_document_title.replace(/\s+/g,"_").toLowerCase()}` : null,
+        signed_at: (config?.requires_signature_canvas || roleType === "nda") ? new Date().toISOString() : null,
+        user_agent: typeof navigator !== "undefined" ? navigator.userAgent : null,
+        scrolled_to_bottom: scrolledToBottom,
         shipping_address: config?.include_shipping ? JSON.stringify(form.shipping_address) : null,
         shirt_size: config?.include_clothing ? form.shirt_size : null,
         pants_size: config?.include_clothing ? form.pants_size : null,
@@ -331,6 +388,81 @@ export default function FormPage() {
           <Field label="How Did You Hear About Us?" name="how_did_you_hear" options={HEAR} type="select" />
         </div>
 
+        {/* LEGAL DOCUMENT VIEWER (NDA, etc.) */}
+        {config.legal_document_text && (
+          <div style={S.card}>
+            <div style={S.sectionTitle}>{config.legal_document_title || "AGREEMENT"}</div>
+            <div
+              onScroll={handleDocScroll}
+              style={{
+                maxHeight: 380,
+                overflowY: "auto",
+                background: "#FAFAF8",
+                border: "1px solid #E8E2D5",
+                borderRadius: 6,
+                padding: "16px 20px",
+                fontSize: 13,
+                lineHeight: 1.65,
+                color: "#1A1A1A",
+                whiteSpace: "pre-wrap",
+                fontFamily: "Georgia, serif",
+                marginBottom: 16,
+              }}
+            >
+              {config.legal_document_text}
+            </div>
+            {!scrolledToBottom && (
+              <div style={{ fontSize: 11, color: "#B89058", letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 12 }}>
+                ↓ Please scroll through the entire agreement
+              </div>
+            )}
+            {config.requires_acknowledgment && (
+              <label style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 13, color: "#1A1A1A", cursor: "pointer", padding: "12px 14px", background: scrolledToBottom ? "#FFF" : "#F5F5F5", border: `1px solid ${acknowledgmentChecked ? C : "#DDD"}`, borderRadius: 6, marginBottom: 12, opacity: scrolledToBottom ? 1 : 0.6, pointerEvents: scrolledToBottom ? "auto" : "none" }}>
+                <input
+                  type="checkbox"
+                  checked={acknowledgmentChecked}
+                  onChange={e => setAcknowledgmentChecked(e.target.checked)}
+                  disabled={!scrolledToBottom}
+                  style={{ marginTop: 3, width: 18, height: 18, cursor: scrolledToBottom ? "pointer" : "not-allowed" }}
+                />
+                <span>
+                  <strong>I have read and agree to the terms of this Agreement.</strong>
+                  {" "}I understand that by signing below I am bound by all obligations stated above, including the non-compete, non-circumvention, confidentiality, and intellectual property provisions.
+                </span>
+              </label>
+            )}
+            {errors.acknowledgment && <div style={S.err}>{errors.acknowledgment}</div>}
+
+            {config.requires_signature_canvas && (
+              <div style={{ marginTop: 12 }}>
+                <label style={S.label}>DRAW YOUR SIGNATURE</label>
+                <canvas
+                  ref={setupSignatureCanvas}
+                  width={560}
+                  height={140}
+                  style={{
+                    width: "100%",
+                    maxWidth: 560,
+                    height: 140,
+                    border: `2px dashed ${hasDrawnSignature ? C : "#CCC"}`,
+                    borderRadius: 6,
+                    background: "#FFF",
+                    cursor: "crosshair",
+                    display: "block",
+                    touchAction: "none",
+                  }}
+                />
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8, fontSize: 11, color: "#888" }}>
+                  <span>{hasDrawnSignature ? "✓ Signature captured" : "Sign with mouse or finger"}</span>
+                  <button type="button" onClick={clearSignatureCanvas} style={{ background: "none", border: "none", color: C, fontSize: 11, letterSpacing: 1, cursor: "pointer", textTransform: "uppercase" }}>Clear</button>
+                </div>
+                {errors.drawn_signature && <div style={S.err}>{errors.drawn_signature}</div>}
+              </div>
+            )}
+            {errors.typed_signature && <div style={S.err}>{errors.typed_signature}</div>}
+          </div>
+        )}
+
         {/* ROLE-SPECIFIC FIELDS */}
         {roleFields.length > 0 && (
           <div style={S.card}>
@@ -380,3 +512,4 @@ export default function FormPage() {
     </div>
   );
 }
+
