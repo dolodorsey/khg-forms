@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import EventIntakeForm from '../../../components/EventIntakeForm';
+import EnterpriseEventForm from '../../../components/EnterpriseEventForm';
 
 const FORMS = {
   rsvp: 'rsvp',
@@ -13,6 +13,10 @@ const FORMS = {
   sponsorship: 'sponsor',
   media: 'media',
   press: 'media',
+  volunteer: 'volunteer',
+  volunteers: 'volunteer',
+  perform: 'perform',
+  performer: 'perform',
 };
 
 export default function GrownishDirectFormPage({ params }) {
@@ -20,9 +24,9 @@ export default function GrownishDirectFormPage({ params }) {
   if (!formType) notFound();
 
   return (
-    <EventIntakeForm
+    <EnterpriseEventForm
       brandName="Grown-ish"
-      brandKey="grownish"
+      brandKey="grown-ish"
       tableName="grownish_form_submissions"
       accent="#E89BFF"
       formType={formType}
