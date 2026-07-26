@@ -1,3 +1,5 @@
+'use client';
+
 import { notFound } from 'next/navigation';
 import { getWaterBrand, WATER_INQUIRY_META } from '../../../lib/activeWaterBrands';
 
