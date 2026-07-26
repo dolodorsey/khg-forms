@@ -49,10 +49,12 @@ create table if not exists public.rose_on_piedmont_form_submissions (
 alter table public.grownish_form_submissions enable row level security;
 alter table public.rose_on_piedmont_form_submissions enable row level security;
 
-grant insert on public.grownish_form_submissions to anon, authenticated;
-grant insert on public.rose_on_piedmont_form_submissions to anon, authenticated;
-grant select, update on public.grownish_form_submissions to service_role;
-grant select, update on public.rose_on_piedmont_form_submissions to service_role;
+revoke all on table public.grownish_form_submissions from anon, authenticated;
+revoke all on table public.rose_on_piedmont_form_submissions from anon, authenticated;
+grant insert on table public.grownish_form_submissions to anon, authenticated;
+grant insert on table public.rose_on_piedmont_form_submissions to anon, authenticated;
+grant select, insert, update, delete on table public.grownish_form_submissions to service_role;
+grant select, insert, update, delete on table public.rose_on_piedmont_form_submissions to service_role;
 
 create index if not exists grownish_forms_type_created_idx on public.grownish_form_submissions (form_type, created_at desc);
 create index if not exists grownish_forms_email_idx on public.grownish_form_submissions (lower(email));
