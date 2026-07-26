@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import EventIntakeForm from '../../../components/EventIntakeForm';
+import EnterpriseEventForm from '../../../components/EnterpriseEventForm';
 
 const FORMS = {
   rsvp: 'rsvp',
@@ -13,6 +13,10 @@ const FORMS = {
   sponsorship: 'sponsor',
   media: 'media',
   press: 'media',
+  volunteer: 'volunteer',
+  volunteers: 'volunteer',
+  perform: 'perform',
+  performer: 'perform',
 };
 
 export default function RoseOnPiedmontDirectFormPage({ params }) {
@@ -20,7 +24,7 @@ export default function RoseOnPiedmontDirectFormPage({ params }) {
   if (!formType) notFound();
 
   return (
-    <EventIntakeForm
+    <EnterpriseEventForm
       brandName="The Rose on Piedmont"
       brandKey="rose-on-piedmont"
       tableName="rose_on_piedmont_form_submissions"
