@@ -33,7 +33,7 @@ export default function PlatformInquiryForm({ slug, platform, formSlug }) {
   const canSubmit = useMemo(() => (
     form.full_name.trim().length >= 2 &&
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) &&
-    (!form.phone || form.phone.replace(/\D/g, '').length >= 10) &&
+    form.phone.replace(/\D/g, '').length >= 10 &&
     form.details.trim().length >= 10 &&
     status !== 'submitting'
   ), [form, status]);
@@ -54,10 +54,10 @@ export default function PlatformInquiryForm({ slug, platform, formSlug }) {
           Prefer: 'return=minimal',
         },
         body: JSON.stringify({
-          inquiry_type: formSlug,
+          form_type: formSlug,
           full_name: form.full_name.trim(),
           email: form.email.trim().toLowerCase(),
-          phone: form.phone.trim() || null,
+          phone: form.phone.trim(),
           organization: form.organization.trim() || null,
           location: form.location.trim() || null,
           details: {
@@ -68,7 +68,7 @@ export default function PlatformInquiryForm({ slug, platform, formSlug }) {
             website: form.website.trim() || null,
             message: form.details.trim(),
           },
-          sms_consent: Boolean(form.sms_consent),
+          consent: Boolean(form.sms_consent),
           status: 'new',
           source: platform.source,
         }),
@@ -114,7 +114,7 @@ export default function PlatformInquiryForm({ slug, platform, formSlug }) {
           <div style={styles.grid}>
             <Field label="Full name"><input value={form.full_name} onChange={(event) => update('full_name', event.target.value)} autoComplete="name" required style={styles.input} /></Field>
             <Field label="Email"><input type="email" value={form.email} onChange={(event) => update('email', event.target.value)} autoComplete="email" required style={styles.input} /></Field>
-            <Field label="Mobile phone" optional><input type="tel" value={form.phone} onChange={(event) => update('phone', event.target.value)} autoComplete="tel" style={styles.input} /></Field>
+            <Field label="Mobile phone"><input type="tel" value={form.phone} onChange={(event) => update('phone', event.target.value)} autoComplete="tel" required style={styles.input} /></Field>
             <Field label="Organization / company" optional><input value={form.organization} onChange={(event) => update('organization', event.target.value)} autoComplete="organization" style={styles.input} /></Field>
             <Field label="City / location" optional><input value={form.location} onChange={(event) => update('location', event.target.value)} style={styles.input} /></Field>
             <Field label="Preferred date" optional><input type="date" value={form.preferred_date} onChange={(event) => update('preferred_date', event.target.value)} style={styles.input} /></Field>
