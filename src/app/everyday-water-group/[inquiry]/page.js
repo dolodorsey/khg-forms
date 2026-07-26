@@ -1,18 +1,9 @@
 import { notFound } from 'next/navigation';
-import WaterInquiryForm from '../../../components/WaterInquiryForm';
-
-const INQUIRIES = new Set([
-  'bulk-water',
-  'municipal',
-  'data-centers',
-  'private-label',
-  'emergency-supply',
-  'distribution',
-  'partner',
-  'request-information',
-]);
+import ActiveWaterInquiryForm from '../../../components/ActiveWaterInquiryForm';
+import { getWaterBrand, isAllowedWaterInquiry } from '../../../lib/activeWaterBrands';
 
 export default function EverydayWaterGroupInquiryPage({ params }) {
-  if (!INQUIRIES.has(params.inquiry)) notFound();
-  return <WaterInquiryForm inquiryType={params.inquiry} />;
+  const brand = getWaterBrand('everyday-water-group');
+  if (!isAllowedWaterInquiry(brand, params.inquiry)) notFound();
+  return <ActiveWaterInquiryForm brand={brand} inquiryType={params.inquiry} />;
 }
