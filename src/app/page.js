@@ -32,7 +32,7 @@ export default function Home() {
     <div style={S.root}>
       <div style={S.header}>
         <div style={S.title}>KHG FORMS DIRECTORY</div>
-        <div style={S.sub}>Applications, signups & onboarding across all KHG brands</div>
+        <div style={S.sub}>Applications, inquiries, quotes, registrations & onboarding across all KHG brands</div>
         <div style={{ fontSize: 11, color: "#555", marginTop: 4 }}>{configs.length} forms across {brands.length} brands</div>
       </div>
       <div style={S.filters}>
@@ -47,7 +47,7 @@ export default function Home() {
           </div>
           <div style={S.grid}>
             {forms.map(f => (
-              <a key={f.id} href={`/${f.brand_key.replace(/_/g, "-")}/${f.role_type}`} style={S.card(f.brand_color)}>
+              <a key={f.id} href={`/f/${f.brand_key.replace(/_/g, "-")}/${f.role_type.replace(/_/g, "-")}`} style={S.card(f.brand_color)}>
                 <div style={S.cardTitle}>{f.form_title}</div>
                 <div style={S.cardSub(f.brand_color)}>{f.role_type.replace(/_/g, " ")} {f.post_signup_enabled ? "• POST-SIGNUP FLOW" : ""}</div>
               </a>
