@@ -30,14 +30,35 @@ const ROLE_LABELS = {
   photographer: "Photographer Application",
   ambassador: "Ambassador Program",
   intern: "Internship Application",
-  applicant: "Career Application",
+  applicant: "Application",
   nda: "NDA Agreement",
+  inquiry: "General Inquiry",
+  quote: "Request a Quote",
+  solo_entry: "Solo Entry",
+  team_entry: "Team Entry",
+  wholesale: "Wholesale",
+  distributor: "Distributor",
+  retail_stockist: "Retail / Stockist",
+  event_activation: "Event Activation",
+  customer_support: "Customer Support",
+  provider_onboarding: "Provider Onboarding",
+  contractor_provider: "Contractor / Provider",
+  buyer_wholesale: "Wholesale / Buyer",
+  farm_visit: "Farm Visit / Tour",
+  supplier: "Supplier",
+  partner: "Partnership",
+  partnership: "Partnership",
+  booking_request: "Booking Request",
 };
 
 const ROLE_ICONS = {
   dj: "🎧", volunteer: "🤝", influencer: "📱", vendor: "🏪", artist: "🎨",
   blogger: "📰", sponsor: "💎", model: "📸", promoter: "📣", photographer: "📷",
-  ambassador: "⭐", intern: "🎓", applicant: "💼", nda: "📋",
+  ambassador: "⭐", intern: "🎓", applicant: "💼", nda: "📋", inquiry: "💬",
+  quote: "🧾", solo_entry: "⛳", team_entry: "🏌️", wholesale: "📦", distributor: "🚚",
+  retail_stockist: "🏬", event_activation: "🎪", customer_support: "🛟", provider_onboarding: "🧰",
+  contractor_provider: "🛠️", buyer_wholesale: "🛒", farm_visit: "🌱", supplier: "🏭", partner: "🤝",
+  partnership: "🤝", booking_request: "📅",
 };
 
 export default function BrandLanding() {
@@ -66,7 +87,6 @@ export default function BrandLanding() {
 
   return (
     <div style={{ fontFamily: "'DM Sans',sans-serif", background: "#FAFAF8", color: "#1A1A1A", minHeight: "100vh", padding: "48px 20px 80px" }}>
-      {/* Header with logo */}
       <div style={{ textAlign: "center", marginBottom: 48 }}>
         {logo && (
           <a href={website} target="_blank" rel="noopener noreferrer">
@@ -79,19 +99,18 @@ export default function BrandLanding() {
           {brandName}
         </div>
         <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: -0.5, marginBottom: 8 }}>
-          JOIN THE TEAM
+          FORMS & OPPORTUNITIES
         </div>
         <div style={{ fontSize: 14, color: "#888", maxWidth: 480, margin: "0 auto" }}>
-          Select what you're applying for below. Each form is specific to the role.
+          Select the application, inquiry, registration, or onboarding form you need.
         </div>
       </div>
 
-      {/* Form cards */}
       <div style={{ maxWidth: 600, margin: "0 auto" }}>
         {forms.map(f => (
           <a
             key={f.id}
-            href={`/${brandSlug}/${f.role_type}`}
+            href={`/f/${brandSlug}/${f.role_type.replace(/_/g, "-")}`}
             style={{
               display: "flex", alignItems: "center", gap: 16, padding: "20px 24px",
               borderRadius: 14, background: "#FFFFFF",
@@ -118,8 +137,7 @@ export default function BrandLanding() {
         ))}
       </div>
 
-      {/* Back to main website */}
-      <div style={{ textAlign: "center", marginTop: 40 }}>
+      {website !== "#" && <div style={{ textAlign: "center", marginTop: 40 }}>
         <a href={website} target="_blank" rel="noopener noreferrer" style={{
           display: "inline-flex", alignItems: "center", gap: 8,
           padding: "12px 24px", borderRadius: 10,
@@ -129,9 +147,8 @@ export default function BrandLanding() {
         }}>
           ← VISIT {brandName} WEBSITE
         </a>
-      </div>
+      </div>}
 
-      {/* Footer */}
       <div style={{ textAlign: "center", marginTop: 48, fontSize: 9, letterSpacing: 4, color: "#CCC", textTransform: "uppercase" }}>
         THE KOLLECTIVE HOSPITALITY GROUP
       </div>
