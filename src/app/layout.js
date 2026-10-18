@@ -1,3 +1,4 @@
+import './forms-ui.css';
 export const metadata = {
   title: 'KHG — Apply',
   description: 'The Kollective Hospitality Group — Applications, Signups & Onboarding',
