@@ -1,6 +1,6 @@
 {
   "captured_from": "khg_form_configs",
-  "purpose": "read-only production form visual QA; no user data",
+  "purpose": "read-only browser QA; POST intercepted; no customer data",
   "routes": [
     {
       "brand_key": "ace_theory",
@@ -13,6 +13,18 @@
     {
       "brand_key": "american_dragon",
       "role_type": "ambassador"
+    },
+    {
+      "brand_key": "american_dragon",
+      "role_type": "catering"
+    },
+    {
+      "brand_key": "american_dragon",
+      "role_type": "general_inquiry"
+    },
+    {
+      "brand_key": "american_dragon",
+      "role_type": "venue_partner"
     },
     {
       "brand_key": "american_track_field",
@@ -57,6 +69,18 @@
     {
       "brand_key": "angel_wings",
       "role_type": "ambassador"
+    },
+    {
+      "brand_key": "angel_wings",
+      "role_type": "catering"
+    },
+    {
+      "brand_key": "angel_wings",
+      "role_type": "general_inquiry"
+    },
+    {
+      "brand_key": "angel_wings",
+      "role_type": "venue_partner"
     },
     {
       "brand_key": "angel-wings",
@@ -231,6 +255,22 @@
       "role_type": "ambassador"
     },
     {
+      "brand_key": "casa_cantina",
+      "role_type": "distributor"
+    },
+    {
+      "brand_key": "casa_cantina",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "casa_cantina",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "casa_cantina",
+      "role_type": "wholesale"
+    },
+    {
       "brand_key": "casper",
       "role_type": "applicant"
     },
@@ -299,6 +339,22 @@
       "role_type": "ambassador"
     },
     {
+      "brand_key": "double_zero",
+      "role_type": "distributor"
+    },
+    {
+      "brand_key": "double_zero",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "double_zero",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "double_zero",
+      "role_type": "wholesale"
+    },
+    {
       "brand_key": "dr_dorsey",
       "role_type": "ambassador"
     },
@@ -348,6 +404,10 @@
     },
     {
       "brand_key": "espresso_co",
+      "role_type": "catering"
+    },
+    {
+      "brand_key": "espresso_co",
       "role_type": "customer_support"
     },
     {
@@ -357,6 +417,10 @@
     {
       "brand_key": "espresso_co",
       "role_type": "event_activation"
+    },
+    {
+      "brand_key": "espresso_co",
+      "role_type": "general_inquiry"
     },
     {
       "brand_key": "espresso_co",
@@ -373,6 +437,10 @@
     {
       "brand_key": "espresso_co",
       "role_type": "vendor"
+    },
+    {
+      "brand_key": "espresso_co",
+      "role_type": "venue_partner"
     },
     {
       "brand_key": "espresso_co",
@@ -441,6 +509,30 @@
     {
       "brand_key": "fallen_stars",
       "role_type": "ambassador"
+    },
+    {
+      "brand_key": "fenyx",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "fenyx",
+      "role_type": "athlete_network"
+    },
+    {
+      "brand_key": "fenyx",
+      "role_type": "general_inquiry"
+    },
+    {
+      "brand_key": "fenyx",
+      "role_type": "model"
+    },
+    {
+      "brand_key": "fenyx",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "fenyx",
+      "role_type": "wholesale"
     },
     {
       "brand_key": "forever_futbol",
@@ -1007,6 +1099,46 @@
       "role_type": "ambassador"
     },
     {
+      "brand_key": "members_elite",
+      "role_type": "media"
+    },
+    {
+      "brand_key": "members_elite",
+      "role_type": "mens_5v5"
+    },
+    {
+      "brand_key": "members_elite",
+      "role_type": "mens_combo"
+    },
+    {
+      "brand_key": "members_elite",
+      "role_type": "officials"
+    },
+    {
+      "brand_key": "members_elite",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "members_elite",
+      "role_type": "team_captain"
+    },
+    {
+      "brand_key": "members_elite",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "members_elite",
+      "role_type": "venue_partner"
+    },
+    {
+      "brand_key": "members_elite",
+      "role_type": "womens"
+    },
+    {
+      "brand_key": "members_elite",
+      "role_type": "youth"
+    },
+    {
       "brand_key": "memory_machine",
       "role_type": "event_booking"
     },
@@ -1068,6 +1200,10 @@
     },
     {
       "brand_key": "mojo_juice",
+      "role_type": "catering"
+    },
+    {
+      "brand_key": "mojo_juice",
       "role_type": "customer_support"
     },
     {
@@ -1077,6 +1213,10 @@
     {
       "brand_key": "mojo_juice",
       "role_type": "event_activation"
+    },
+    {
+      "brand_key": "mojo_juice",
+      "role_type": "general_inquiry"
     },
     {
       "brand_key": "mojo_juice",
@@ -1093,6 +1233,10 @@
     {
       "brand_key": "mojo_juice",
       "role_type": "vendor"
+    },
+    {
+      "brand_key": "mojo_juice",
+      "role_type": "venue_partner"
     },
     {
       "brand_key": "mojo_juice",
@@ -1115,6 +1259,18 @@
       "role_type": "ambassador"
     },
     {
+      "brand_key": "morning_after",
+      "role_type": "catering"
+    },
+    {
+      "brand_key": "morning_after",
+      "role_type": "general_inquiry"
+    },
+    {
+      "brand_key": "morning_after",
+      "role_type": "venue_partner"
+    },
+    {
       "brand_key": "morning-after",
       "role_type": "ambassador"
     },
@@ -1131,6 +1287,18 @@
       "role_type": "ambassador"
     },
     {
+      "brand_key": "mr_oyster",
+      "role_type": "catering"
+    },
+    {
+      "brand_key": "mr_oyster",
+      "role_type": "general_inquiry"
+    },
+    {
+      "brand_key": "mr_oyster",
+      "role_type": "venue_partner"
+    },
+    {
       "brand_key": "mr-oyster",
       "role_type": "ambassador"
     },
@@ -1145,6 +1313,22 @@
     {
       "brand_key": "myxx",
       "role_type": "ambassador"
+    },
+    {
+      "brand_key": "nativa",
+      "role_type": "distributor"
+    },
+    {
+      "brand_key": "nativa",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "nativa",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "nativa",
+      "role_type": "wholesale"
     },
     {
       "brand_key": "nativa_waterworks",
@@ -1259,6 +1443,38 @@
       "role_type": "ambassador"
     },
     {
+      "brand_key": "ora",
+      "role_type": "distributor"
+    },
+    {
+      "brand_key": "ora",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "ora",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "ora",
+      "role_type": "wholesale"
+    },
+    {
+      "brand_key": "otini",
+      "role_type": "distributor"
+    },
+    {
+      "brand_key": "otini",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "otini",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "otini",
+      "role_type": "wholesale"
+    },
+    {
       "brand_key": "paparazzi",
       "role_type": "ambassador"
     },
@@ -1275,12 +1491,36 @@
       "role_type": "ambassador"
     },
     {
+      "brand_key": "pasta_bish",
+      "role_type": "catering"
+    },
+    {
+      "brand_key": "pasta_bish",
+      "role_type": "general_inquiry"
+    },
+    {
+      "brand_key": "pasta_bish",
+      "role_type": "venue_partner"
+    },
+    {
       "brand_key": "pasta-bish",
       "role_type": "ambassador"
     },
     {
       "brand_key": "patty_daddy",
       "role_type": "ambassador"
+    },
+    {
+      "brand_key": "patty_daddy",
+      "role_type": "catering"
+    },
+    {
+      "brand_key": "patty_daddy",
+      "role_type": "general_inquiry"
+    },
+    {
+      "brand_key": "patty_daddy",
+      "role_type": "venue_partner"
     },
     {
       "brand_key": "patty-daddy",
@@ -1293,6 +1533,18 @@
     {
       "brand_key": "peace_pizza",
       "role_type": "ambassador"
+    },
+    {
+      "brand_key": "peace_pizza",
+      "role_type": "catering"
+    },
+    {
+      "brand_key": "peace_pizza",
+      "role_type": "general_inquiry"
+    },
+    {
+      "brand_key": "peace_pizza",
+      "role_type": "venue_partner"
     },
     {
       "brand_key": "peace-pizza",
@@ -1349,6 +1601,22 @@
     {
       "brand_key": "playmakers_sports_association",
       "role_type": "ambassador"
+    },
+    {
+      "brand_key": "prive",
+      "role_type": "distributor"
+    },
+    {
+      "brand_key": "prive",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "prive",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "prive",
+      "role_type": "wholesale"
     },
     {
       "brand_key": "project_x",
@@ -1631,6 +1899,18 @@
       "role_type": "ambassador"
     },
     {
+      "brand_key": "sweet_tooth",
+      "role_type": "catering"
+    },
+    {
+      "brand_key": "sweet_tooth",
+      "role_type": "general_inquiry"
+    },
+    {
+      "brand_key": "sweet_tooth",
+      "role_type": "venue_partner"
+    },
+    {
       "brand_key": "sweet-tooth",
       "role_type": "ambassador"
     },
@@ -1645,6 +1925,18 @@
     {
       "brand_key": "taco_yaki",
       "role_type": "ambassador"
+    },
+    {
+      "brand_key": "taco_yaki",
+      "role_type": "catering"
+    },
+    {
+      "brand_key": "taco_yaki",
+      "role_type": "general_inquiry"
+    },
+    {
+      "brand_key": "taco_yaki",
+      "role_type": "venue_partner"
     },
     {
       "brand_key": "taco-yaki",
@@ -1693,6 +1985,22 @@
     {
       "brand_key": "tea_time_golf",
       "role_type": "volunteer"
+    },
+    {
+      "brand_key": "tempo",
+      "role_type": "distributor"
+    },
+    {
+      "brand_key": "tempo",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "tempo",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "tempo",
+      "role_type": "wholesale"
     },
     {
       "brand_key": "the_attorney_network",
@@ -1795,6 +2103,18 @@
       "role_type": "ambassador"
     },
     {
+      "brand_key": "tossd",
+      "role_type": "catering"
+    },
+    {
+      "brand_key": "tossd",
+      "role_type": "general_inquiry"
+    },
+    {
+      "brand_key": "tossd",
+      "role_type": "venue_partner"
+    },
+    {
       "brand_key": "trail_blazers",
       "role_type": "applicant"
     },
@@ -1809,6 +2129,22 @@
     {
       "brand_key": "trailblazers",
       "role_type": "ambassador"
+    },
+    {
+      "brand_key": "tribal",
+      "role_type": "distributor"
+    },
+    {
+      "brand_key": "tribal",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "tribal",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "tribal",
+      "role_type": "wholesale"
     },
     {
       "brand_key": "tribal_water",
@@ -1945,6 +2281,22 @@
     {
       "brand_key": "wrst_bhvr",
       "role_type": "nda"
+    },
+    {
+      "brand_key": "xxx",
+      "role_type": "distributor"
+    },
+    {
+      "brand_key": "xxx",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "xxx",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "xxx",
+      "role_type": "wholesale"
     },
     {
       "brand_key": "xxx_vodka",
