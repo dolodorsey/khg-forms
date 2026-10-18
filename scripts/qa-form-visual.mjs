@@ -53,7 +53,7 @@ for(const rec of work){
      const banner=await page.getByText('Please complete the required fields.').count();
      item.validation=banner>0?'required_fields_rejected':'review_missing_client_banner';
      await page.screenshot({path:path.join(root,safe+'--validation.png'),fullPage:true,animations:'disabled'});
-     if(focus.has(rec.brand_key)){
+     if(true){ // All active forms receive isolated simulated fill; POST is intercepted above.
        try{
         const textInputs=form.locator('input:not([type=checkbox]):not([type=radio]):not([type=file]):not([tabindex="-1"])');
         const n=await textInputs.count();
