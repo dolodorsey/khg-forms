@@ -6,15 +6,15 @@ const BRANDS = [
     "slug": "american-track-field",
     "color": "#165DA8",
     "forms": [
+      "athlete-agent",
       "athlete-tryouts",
       "coach-application",
-      "athlete-agent",
+      "fan-updates",
       "franchise-owner",
-      "sponsor",
-      "venue-partner",
-      "officials",
       "media",
-      "fan-updates"
+      "officials",
+      "sponsor",
+      "venue-partner"
     ]
   },
   {
@@ -22,11 +22,11 @@ const BRANDS = [
     "slug": "inner-circle",
     "color": "#367D92",
     "forms": [
-      "venue-partner",
-      "revenue-assessment",
       "beverage-placement",
       "kitchen-partner",
-      "sponsor"
+      "revenue-assessment",
+      "sponsor",
+      "venue-partner"
     ]
   },
   {
@@ -34,10 +34,10 @@ const BRANDS = [
     "slug": "memory-machine",
     "color": "#BD8B43",
     "forms": [
-      "sponsor",
-      "venue-host",
       "event-booking",
-      "support"
+      "sponsor",
+      "support",
+      "venue-host"
     ]
   },
   {
@@ -45,11 +45,19 @@ const BRANDS = [
     "slug": "good-times",
     "color": "#E0573B",
     "forms": [
-      "venue-partner",
-      "event-submission",
       "advertiser",
+      "ambassador",
+      "blogger",
       "early-access",
-      "ambassador"
+      "event-submission",
+      "host",
+      "influencer",
+      "model",
+      "nda",
+      "podcast",
+      "promoter",
+      "provider-onboarding",
+      "venue-partner"
     ]
   },
   {
@@ -57,11 +65,11 @@ const BRANDS = [
     "slug": "sos",
     "color": "#3C6EB0",
     "forms": [
-      "provider-onboarding",
+      "ambassador",
       "early-access",
       "fleet-partner",
-      "sponsor",
-      "ambassador"
+      "provider-onboarding",
+      "sponsor"
     ]
   },
   {
@@ -69,11 +77,12 @@ const BRANDS = [
     "slug": "mission-365",
     "color": "#397A52",
     "forms": [
-      "organizer",
+      "ambassador",
       "business-sponsor",
       "donor-interest",
-      "volunteer",
-      "provider-onboarding"
+      "organizer",
+      "provider-onboarding",
+      "volunteer"
     ]
   },
   {
@@ -81,10 +90,10 @@ const BRANDS = [
     "slug": "luxe-on-demand",
     "color": "#654C89",
     "forms": [
+      "ambassador",
       "concierge-application",
       "customer-waitlist",
-      "strategic-partner",
-      "ambassador"
+      "strategic-partner"
     ]
   },
   {
@@ -92,6 +101,7 @@ const BRANDS = [
     "slug": "the-vote",
     "color": "#496E96",
     "forms": [
+      "ambassador",
       "civic-partner",
       "correction",
       "media"
@@ -102,11 +112,17 @@ const BRANDS = [
     "slug": "sole-exchange",
     "color": "#347A54",
     "forms": [
-      "shoe-donation",
-      "pickup-request",
+      "ambassador",
+      "blogger",
       "collection-host",
       "corporate-partner",
-      "sponsor"
+      "dj",
+      "nda",
+      "pickup-request",
+      "shoe-donation",
+      "sponsor",
+      "vendor",
+      "volunteer"
     ]
   },
   {
@@ -114,9 +130,9 @@ const BRANDS = [
     "slug": "bevco",
     "color": "#267DB2",
     "forms": [
+      "brand-sponsor",
       "vendor",
-      "venue-placement",
-      "brand-sponsor"
+      "venue-placement"
     ]
   },
   {
@@ -124,10 +140,11 @@ const BRANDS = [
     "slug": "casper",
     "color": "#B06C39",
     "forms": [
-      "venue-kitchen-partner",
-      "supplier",
+      "applicant",
       "catering-interest",
-      "applicant"
+      "nda",
+      "supplier",
+      "venue-kitchen-partner"
     ]
   },
   {
@@ -135,7 +152,10 @@ const BRANDS = [
     "slug": "angel-wings",
     "color": "#A45C31",
     "forms": [
-      "ambassador"
+      "ambassador",
+      "catering",
+      "general-inquiry",
+      "venue-partner"
     ]
   },
   {
@@ -143,7 +163,10 @@ const BRANDS = [
     "slug": "patty-daddy",
     "color": "#A45C31",
     "forms": [
-      "ambassador"
+      "ambassador",
+      "catering",
+      "general-inquiry",
+      "venue-partner"
     ]
   },
   {
@@ -151,7 +174,10 @@ const BRANDS = [
     "slug": "taco-yaki",
     "color": "#A45C31",
     "forms": [
-      "ambassador"
+      "ambassador",
+      "catering",
+      "general-inquiry",
+      "venue-partner"
     ]
   },
   {
@@ -159,7 +185,10 @@ const BRANDS = [
     "slug": "morning-after",
     "color": "#A45C31",
     "forms": [
-      "ambassador"
+      "ambassador",
+      "catering",
+      "general-inquiry",
+      "venue-partner"
     ]
   },
   {
@@ -167,7 +196,18 @@ const BRANDS = [
     "slug": "mojo-juice",
     "color": "#A45C31",
     "forms": [
-      "ambassador"
+      "ambassador",
+      "catering",
+      "customer-support",
+      "distributor",
+      "event-activation",
+      "general-inquiry",
+      "inquiry",
+      "retail-stockist",
+      "sponsor",
+      "vendor",
+      "venue-partner",
+      "wholesale"
     ]
   },
   {
@@ -176,9 +216,17 @@ const BRANDS = [
     "color": "#A45C31",
     "forms": [
       "ambassador",
+      "catering",
+      "customer-support",
+      "distributor",
+      "event-activation",
+      "general-inquiry",
       "inquiry",
-      "wholesale",
-      "sponsor"
+      "retail-stockist",
+      "sponsor",
+      "vendor",
+      "venue-partner",
+      "wholesale"
     ]
   },
   {
@@ -186,11 +234,16 @@ const BRANDS = [
     "slug": "dr-dorsey",
     "color": "#342A5C",
     "forms": [
-      "speaking",
+      "ambassador",
+      "applicant",
+      "influencer",
+      "intern",
+      "nda",
       "partnership",
       "press",
-      "ambassador",
-      "sponsor"
+      "speaking",
+      "sponsor",
+      "vendor"
     ]
   },
   {
@@ -198,11 +251,13 @@ const BRANDS = [
     "slug": "kollective",
     "color": "#303D66",
     "forms": [
-      "investor",
-      "sponsor",
-      "strategic-partner",
+      "applicant",
       "general-inquiry",
-      "applicant"
+      "intern",
+      "investor",
+      "nda",
+      "sponsor",
+      "strategic-partner"
     ]
   },
   {
@@ -214,21 +269,180 @@ const BRANDS = [
       "media-booking"
     ]
   },
-  {"name":"Member's Elite","slug":"members-elite","color":"#384BA1","forms":["mens-5v5","mens-combo","youth","womens","sponsor","venue-partner","officials","vendor","media","team-captain","ambassador"]},
-  {"name":"FĚNYX","slug":"fenyx","color":"#8F4EB5","forms":["athlete-network","ambassador","wholesale","sponsor","general-inquiry","model"]},
-  {"name":"Pasta Bish","slug":"pasta-bish","color":"#A65D39","forms":["catering","venue-partner","general-inquiry"]},
-  {"name":"Sweet Tooth","slug":"sweet-tooth","color":"#A65D39","forms":["catering","venue-partner","general-inquiry"]},
-  {"name":"Mr. Oyster","slug":"mr-oyster","color":"#A65D39","forms":["catering","venue-partner","general-inquiry"]},
-  {"name":"Peace Pizza","slug":"peace-pizza","color":"#A65D39","forms":["catering","venue-partner","general-inquiry"]},
-  {"name":"ORA","slug":"ora","color":"#2877A5","forms":["wholesale","distributor","sponsor","inquiry"]},
-  {"name":"OTINI","slug":"otini","color":"#2877A5","forms":["wholesale","distributor","sponsor","inquiry"]},
-  {"name":"Casa Cantina","slug":"casa-cantina","color":"#2877A5","forms":["wholesale","distributor","sponsor","inquiry"]},
-  {"name":"Double Zero","slug":"double-zero","color":"#2877A5","forms":["wholesale","distributor","sponsor","inquiry"]},
-  {"name":"Tempo","slug":"tempo","color":"#2877A5","forms":["wholesale","distributor","sponsor","inquiry"]},
-  {"name":"Nativa","slug":"nativa","color":"#2877A5","forms":["wholesale","distributor","sponsor","inquiry"]},
-  {"name":"Tribal","slug":"tribal","color":"#2877A5","forms":["wholesale","distributor","sponsor","inquiry"]},
-  {"name":"Privé","slug":"prive","color":"#2877A5","forms":["wholesale","distributor","sponsor","inquiry"]},
-  {"name":"XXX","slug":"xxx","color":"#2877A5","forms":["wholesale","distributor","sponsor","inquiry"]}
+  {
+    "name": "Member's Elite",
+    "slug": "members-elite",
+    "color": "#384BA1",
+    "forms": [
+      "ambassador",
+      "media",
+      "mens-5v5",
+      "mens-combo",
+      "officials",
+      "sponsor",
+      "team-captain",
+      "vendor",
+      "venue-partner",
+      "womens",
+      "youth"
+    ]
+  },
+  {
+    "name": "FĚNYX",
+    "slug": "fenyx",
+    "color": "#8F4EB5",
+    "forms": [
+      "ambassador",
+      "athlete-network",
+      "general-inquiry",
+      "model",
+      "sponsor",
+      "wholesale"
+    ]
+  },
+  {
+    "name": "Pasta Bish",
+    "slug": "pasta-bish",
+    "color": "#A65D39",
+    "forms": [
+      "ambassador",
+      "catering",
+      "general-inquiry",
+      "venue-partner"
+    ]
+  },
+  {
+    "name": "Sweet Tooth",
+    "slug": "sweet-tooth",
+    "color": "#A65D39",
+    "forms": [
+      "ambassador",
+      "catering",
+      "general-inquiry",
+      "venue-partner"
+    ]
+  },
+  {
+    "name": "Mr. Oyster",
+    "slug": "mr-oyster",
+    "color": "#A65D39",
+    "forms": [
+      "ambassador",
+      "catering",
+      "general-inquiry",
+      "venue-partner"
+    ]
+  },
+  {
+    "name": "Peace Pizza",
+    "slug": "peace-pizza",
+    "color": "#A65D39",
+    "forms": [
+      "ambassador",
+      "catering",
+      "general-inquiry",
+      "venue-partner"
+    ]
+  },
+  {
+    "name": "ORA",
+    "slug": "ora",
+    "color": "#2877A5",
+    "forms": [
+      "distributor",
+      "inquiry",
+      "sponsor",
+      "wholesale"
+    ]
+  },
+  {
+    "name": "OTINI",
+    "slug": "otini",
+    "color": "#2877A5",
+    "forms": [
+      "distributor",
+      "inquiry",
+      "sponsor",
+      "wholesale"
+    ]
+  },
+  {
+    "name": "Casa Cantina",
+    "slug": "casa-cantina",
+    "color": "#2877A5",
+    "forms": [
+      "distributor",
+      "inquiry",
+      "sponsor",
+      "wholesale"
+    ]
+  },
+  {
+    "name": "Double Zero",
+    "slug": "double-zero",
+    "color": "#2877A5",
+    "forms": [
+      "distributor",
+      "inquiry",
+      "sponsor",
+      "wholesale"
+    ]
+  },
+  {
+    "name": "Tempo",
+    "slug": "tempo",
+    "color": "#2877A5",
+    "forms": [
+      "distributor",
+      "inquiry",
+      "sponsor",
+      "wholesale"
+    ]
+  },
+  {
+    "name": "Nativa",
+    "slug": "nativa",
+    "color": "#2877A5",
+    "forms": [
+      "distributor",
+      "inquiry",
+      "sponsor",
+      "wholesale"
+    ]
+  },
+  {
+    "name": "Tribal",
+    "slug": "tribal",
+    "color": "#2877A5",
+    "forms": [
+      "distributor",
+      "inquiry",
+      "sponsor",
+      "wholesale"
+    ]
+  },
+  {
+    "name": "Privé",
+    "slug": "prive",
+    "color": "#2877A5",
+    "forms": [
+      "distributor",
+      "inquiry",
+      "sponsor",
+      "wholesale"
+    ]
+  },
+  {
+    "name": "XXX",
+    "slug": "xxx",
+    "color": "#2877A5",
+    "forms": [
+      "distributor",
+      "inquiry",
+      "sponsor",
+      "wholesale"
+    ]
+  }
 ];
 const pretty = (s) => s.replaceAll('-', ' ').replace(/\b\w/g, x => x.toUpperCase());
 export const metadata = {title:'KHG | Current Focus Forms', description:'Applications, sponsorships, partners and signups for active Kollective companies.'};
