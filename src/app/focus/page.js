@@ -1,3 +1,5 @@
+"use client";
+import { useState } from "react";
 // Current-focus directory. Each brand and its intake remain independently identified.
 // Public registration for THE VOTE is never collected here; link users to official state registration resources.
 const BRANDS = [
@@ -445,9 +447,10 @@ const BRANDS = [
   }
 ];
 const pretty = (s) => s.replaceAll('-', ' ').replace(/\b\w/g, x => x.toUpperCase());
-export const metadata = {title:'KHG | Current Focus Forms', description:'Applications, sponsorships, partners and signups for active Kollective companies.'};
 export default function FocusFormsDirectory(){
-  return <main style={{minHeight:'100vh',background:'#F4F1EA',color:'#191919',fontFamily:'Inter,Arial,sans-serif',padding:'32px 18px 90px'}}>
+  const [search,setSearch]=useState("");
+  const filtered=BRANDS.map(b=>({...b,forms:b.name.toLowerCase().includes(search.trim().toLowerCase())?b.forms:b.forms.filter(role=>role.toLowerCase().includes(search.trim().toLowerCase()))})).filter(b=>b.forms.length);
+  return <main style={{minHeight:'100vh',background:'#F4F1EA',color:'#191919',fontFamily:"'DM Sans',Arial,sans-serif",padding:'32px 18px 90px'}}>
     <div style={{maxWidth:1180,margin:'0 auto'}}>
       <a href="/" style={{color:'#6B6670',fontSize:12,textDecoration:'none',fontWeight:700}}>← All KHG Forms</a>
       <header style={{padding:'42px 0 24px',borderBottom:'1px solid #DAD5CC'}}>
@@ -455,8 +458,13 @@ export default function FocusFormsDirectory(){
         <h1 style={{fontSize:'clamp(30px,5vw,52px)',letterSpacing:-2,lineHeight:1.05,margin:'13px 0'}}>Current Focus Forms</h1>
         <p style={{color:'#6B6670',fontSize:15,maxWidth:680,lineHeight:1.6}}>Brand-specific applications, venues, sponsors, partnerships, recruitment and community interest. Every submission keeps its company identity. A completed form is a request, not an approval, booking or contract.</p>
       </header>
+      <div style={{marginTop:20,marginBottom:4,maxWidth:550}}>
+        <label htmlFor="focus-forms-search" style={{display:'block',marginBottom:8,fontSize:13,fontWeight:800,color:'#555'}}>SEARCH BY BRAND OR FORM</label>
+        <input id="focus-forms-search" type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search athletes, sponsors, vendors, brands..." style={{width:'100%',boxSizing:'border-box',border:'1px solid #CBC5BA',borderRadius:11,background:'white',padding:'14px 16px',fontSize:16,color:'#252525'}}/>
+        <p role="status" style={{color:'#6E6B69',fontSize:12}}>{filtered.length} brand entries · {filtered.reduce((t,b)=>t+b.forms.length,0)} matching forms</p>
+      </div>
       <section aria-label="Independent brand forms" style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,310px),1fr))',gap:18,marginTop:24}}>
-        {BRANDS.map(b=><article key={b.slug} style={{background:'#FFFFFF',border:'1px solid #DDD7CF',borderRadius:16,padding:22,boxShadow:'0 3px 14px rgba(30,20,5,.035)',borderTop:'4px solid '+b.color}}>
+        {filtered.map(b=><article key={b.slug} style={{background:'#FFFFFF',border:'1px solid #DDD7CF',borderRadius:16,padding:22,boxShadow:'0 3px 14px rgba(30,20,5,.035)',borderTop:'4px solid '+b.color}}>
           <h2 style={{fontSize:19,margin:'0 0 10px',letterSpacing:-.3}}>{b.name}</h2>
           <a href={'/brand/'+b.slug} style={{fontSize:12,color:b.color,fontWeight:800,textDecoration:'none'}}>All {b.name} forms →</a>
           <nav aria-label={b.name+' forms'} style={{display:'flex',flexWrap:'wrap',gap:7,marginTop:16}}>
