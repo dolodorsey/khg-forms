@@ -48,7 +48,7 @@ export default function Home() {
           </div>
           <div style={S.grid}>
             {forms.map(f => (
-              <a key={f.id} href={`/f/${f.brand_key.replace(/_/g, "-")}/${f.role_type.replace(/_/g, "-")}`} style={S.card(f.brand_color)}>
+              <a key={f.id} href={`/f/${f.brand_key.replace(/_/g, "-")}/${f.role_type.replace(/_/g, "-")}?brand_key=${encodeURIComponent(f.brand_key)}`} style={S.card(f.brand_color)}>
                 <div style={S.cardTitle}>{f.form_title}</div>
                 <div style={S.cardSub(f.brand_color)}>{f.role_type.replace(/_/g, " ")} {f.post_signup_enabled ? "• POST-SIGNUP FLOW" : ""}</div>
               </a>
