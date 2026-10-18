@@ -170,6 +170,12 @@ export default function UniversalFormPage() {
         errors[field.key] = "Required";
       }
     });
+    if (form.email.trim() && !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(form.email.trim())) errors.email = "Enter a valid email address.";
+    if (form.phone.trim() && form.phone.replace(/\\D/g, "").length < 10) errors.phone = "Enter a valid phone number.";
+    if (form.website_url.trim()) {
+      try { const url = new URL(form.website_url); if (!["http:", "https:"].includes(url.protocol)) errors.website_url = "Enter a valid website URL."; }
+      catch { errors.website_url = "Enter a full website URL, starting with https://"; }
+    }
     if (config?.requires_acknowledgment && !acknowledgmentChecked) errors.acknowledgment = "You must accept the agreement.";
     if (config?.requires_signature_canvas && !hasSignatureRef.current) errors.signature = "Signature required.";
     setFieldErrors(errors);
@@ -312,7 +318,7 @@ export default function UniversalFormPage() {
           </div>
           <div style={styles.twoCol}>
             <CoreInput label="TikTok" name="tiktok_handle" value={form.tiktok_handle} onChange={update} />
-            <CoreInput label="Website" name="website_url" type="url" value={form.website_url} onChange={update} />
+            <CoreInput label="Website" name="website_url" type="url" value={form.website_url} onChange={update} error={fieldErrors.website_url} />
           </div>
         </Section>
 
