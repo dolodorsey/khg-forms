@@ -213,7 +213,22 @@ const BRANDS = [
       "collaboration",
       "media-booking"
     ]
-  }
+  },
+  {"name":"Member's Elite","slug":"members-elite","color":"#384BA1","forms":["mens-5v5","mens-combo","youth","womens","sponsor","venue-partner","officials","vendor","media","team-captain","ambassador"]},
+  {"name":"FĚNYX","slug":"fenyx","color":"#8F4EB5","forms":["athlete-network","ambassador","wholesale","sponsor","general-inquiry","model"]},
+  {"name":"Pasta Bish","slug":"pasta-bish","color":"#A65D39","forms":["catering","venue-partner","general-inquiry"]},
+  {"name":"Sweet Tooth","slug":"sweet-tooth","color":"#A65D39","forms":["catering","venue-partner","general-inquiry"]},
+  {"name":"Mr. Oyster","slug":"mr-oyster","color":"#A65D39","forms":["catering","venue-partner","general-inquiry"]},
+  {"name":"Peace Pizza","slug":"peace-pizza","color":"#A65D39","forms":["catering","venue-partner","general-inquiry"]},
+  {"name":"ORA","slug":"ora","color":"#2877A5","forms":["wholesale","distributor","sponsor","inquiry"]},
+  {"name":"OTINI","slug":"otini","color":"#2877A5","forms":["wholesale","distributor","sponsor","inquiry"]},
+  {"name":"Casa Cantina","slug":"casa-cantina","color":"#2877A5","forms":["wholesale","distributor","sponsor","inquiry"]},
+  {"name":"Double Zero","slug":"double-zero","color":"#2877A5","forms":["wholesale","distributor","sponsor","inquiry"]},
+  {"name":"Tempo","slug":"tempo","color":"#2877A5","forms":["wholesale","distributor","sponsor","inquiry"]},
+  {"name":"Nativa","slug":"nativa","color":"#2877A5","forms":["wholesale","distributor","sponsor","inquiry"]},
+  {"name":"Tribal","slug":"tribal","color":"#2877A5","forms":["wholesale","distributor","sponsor","inquiry"]},
+  {"name":"Privé","slug":"prive","color":"#2877A5","forms":["wholesale","distributor","sponsor","inquiry"]},
+  {"name":"XXX","slug":"xxx","color":"#2877A5","forms":["wholesale","distributor","sponsor","inquiry"]}
 ];
 const pretty = (s) => s.replaceAll('-', ' ').replace(/\b\w/g, x => x.toUpperCase());
 export const metadata = {title:'KHG | Current Focus Forms', description:'Applications, sponsorships, partners and signups for active Kollective companies.'};
