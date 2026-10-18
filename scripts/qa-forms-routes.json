@@ -1,0 +1,1982 @@
+{
+  "captured_from": "khg_form_configs",
+  "purpose": "read-only production form visual QA; no user data",
+  "routes": [
+    {
+      "brand_key": "ace_theory",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "amara",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "american_dragon",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "american_track_field",
+      "role_type": "athlete_agent"
+    },
+    {
+      "brand_key": "american_track_field",
+      "role_type": "athlete_tryouts"
+    },
+    {
+      "brand_key": "american_track_field",
+      "role_type": "coach_application"
+    },
+    {
+      "brand_key": "american_track_field",
+      "role_type": "fan_updates"
+    },
+    {
+      "brand_key": "american_track_field",
+      "role_type": "franchise_owner"
+    },
+    {
+      "brand_key": "american_track_field",
+      "role_type": "media"
+    },
+    {
+      "brand_key": "american_track_field",
+      "role_type": "officials"
+    },
+    {
+      "brand_key": "american_track_field",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "american_track_field",
+      "role_type": "venue_partner"
+    },
+    {
+      "brand_key": "american-dragon",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "angel_wings",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "angel-wings",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "aquifer_waterworks",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "aquifer_waterworks",
+      "role_type": "customer_support"
+    },
+    {
+      "brand_key": "aquifer_waterworks",
+      "role_type": "distributor"
+    },
+    {
+      "brand_key": "aquifer_waterworks",
+      "role_type": "event_activation"
+    },
+    {
+      "brand_key": "aquifer_waterworks",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "aquifer_waterworks",
+      "role_type": "retail_stockist"
+    },
+    {
+      "brand_key": "aquifer_waterworks",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "aquifer_waterworks",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "aquifer_waterworks",
+      "role_type": "wholesale"
+    },
+    {
+      "brand_key": "automation_office",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "ball_series",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "ball-series",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "bare",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "beauty_and_the_beast",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "beauty_water",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "beauty_water",
+      "role_type": "customer_support"
+    },
+    {
+      "brand_key": "beauty_water",
+      "role_type": "distributor"
+    },
+    {
+      "brand_key": "beauty_water",
+      "role_type": "event_activation"
+    },
+    {
+      "brand_key": "beauty_water",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "beauty_water",
+      "role_type": "retail_stockist"
+    },
+    {
+      "brand_key": "beauty_water",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "beauty_water",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "beauty_water",
+      "role_type": "wholesale"
+    },
+    {
+      "brand_key": "bevco",
+      "role_type": "brand_sponsor"
+    },
+    {
+      "brand_key": "bevco",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "bevco",
+      "role_type": "venue_placement"
+    },
+    {
+      "brand_key": "black_ball",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "black_pages",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "black_pages",
+      "role_type": "provider_onboarding"
+    },
+    {
+      "brand_key": "black-ball",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "black-pages",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "bodega",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "bodega",
+      "role_type": "nda"
+    },
+    {
+      "brand_key": "bodega",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "body_call",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "boil_gone_wild",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "bowling_tournament",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "bowling-tournament",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "brand_studio",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "breakfast_at_tiffanys",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "canvas_club",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "casa",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "casper",
+      "role_type": "applicant"
+    },
+    {
+      "brand_key": "casper",
+      "role_type": "catering_interest"
+    },
+    {
+      "brand_key": "casper",
+      "role_type": "nda"
+    },
+    {
+      "brand_key": "casper",
+      "role_type": "supplier"
+    },
+    {
+      "brand_key": "casper",
+      "role_type": "venue_kitchen_partner"
+    },
+    {
+      "brand_key": "champagne_ball",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "champagne-ball",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "cinco_de_mayo",
+      "role_type": "blogger"
+    },
+    {
+      "brand_key": "cinco_de_mayo",
+      "role_type": "dj"
+    },
+    {
+      "brand_key": "cinco_de_mayo",
+      "role_type": "nda"
+    },
+    {
+      "brand_key": "cinco_de_mayo",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "clean_cut_landscaping",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "clean_cuts",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "clicks",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "consultations",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "courses",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "cravings",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "dr_dorsey",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "dr_dorsey",
+      "role_type": "applicant"
+    },
+    {
+      "brand_key": "dr_dorsey",
+      "role_type": "influencer"
+    },
+    {
+      "brand_key": "dr_dorsey",
+      "role_type": "intern"
+    },
+    {
+      "brand_key": "dr_dorsey",
+      "role_type": "nda"
+    },
+    {
+      "brand_key": "dr_dorsey",
+      "role_type": "partnership"
+    },
+    {
+      "brand_key": "dr_dorsey",
+      "role_type": "press"
+    },
+    {
+      "brand_key": "dr_dorsey",
+      "role_type": "speaking"
+    },
+    {
+      "brand_key": "dr_dorsey",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "dr_dorsey",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "dream",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "espresso_co",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "espresso_co",
+      "role_type": "customer_support"
+    },
+    {
+      "brand_key": "espresso_co",
+      "role_type": "distributor"
+    },
+    {
+      "brand_key": "espresso_co",
+      "role_type": "event_activation"
+    },
+    {
+      "brand_key": "espresso_co",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "espresso_co",
+      "role_type": "retail_stockist"
+    },
+    {
+      "brand_key": "espresso_co",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "espresso_co",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "espresso_co",
+      "role_type": "wholesale"
+    },
+    {
+      "brand_key": "espresso-co",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "events",
+      "role_type": "artist"
+    },
+    {
+      "brand_key": "events",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "events",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "events",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "everyday_water_group",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "everyday_water_group",
+      "role_type": "customer_support"
+    },
+    {
+      "brand_key": "everyday_water_group",
+      "role_type": "distributor"
+    },
+    {
+      "brand_key": "everyday_water_group",
+      "role_type": "event_activation"
+    },
+    {
+      "brand_key": "everyday_water_group",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "everyday_water_group",
+      "role_type": "retail_stockist"
+    },
+    {
+      "brand_key": "everyday_water_group",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "everyday_water_group",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "everyday_water_group",
+      "role_type": "wholesale"
+    },
+    {
+      "brand_key": "exclamation_point",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "fallen_stars",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "forever_futbol",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "forever_futbol",
+      "role_type": "blogger"
+    },
+    {
+      "brand_key": "forever_futbol",
+      "role_type": "dj"
+    },
+    {
+      "brand_key": "forever_futbol",
+      "role_type": "nda"
+    },
+    {
+      "brand_key": "forever_futbol",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "forever_futbol",
+      "role_type": "volunteer"
+    },
+    {
+      "brand_key": "fraternity",
+      "role_type": "applicant"
+    },
+    {
+      "brand_key": "freedom_fest",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "freedom_parade",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "freedom_run_5k",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "frequency_productions",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "frequency-productions",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "gangsta_gospel",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "gentlemans_club",
+      "role_type": "applicant"
+    },
+    {
+      "brand_key": "gentlemans_club",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "golf_tournament",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "golf-tournament",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "good_times",
+      "role_type": "advertiser"
+    },
+    {
+      "brand_key": "good_times",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "good_times",
+      "role_type": "blogger"
+    },
+    {
+      "brand_key": "good_times",
+      "role_type": "early_access"
+    },
+    {
+      "brand_key": "good_times",
+      "role_type": "event_submission"
+    },
+    {
+      "brand_key": "good_times",
+      "role_type": "host"
+    },
+    {
+      "brand_key": "good_times",
+      "role_type": "influencer"
+    },
+    {
+      "brand_key": "good_times",
+      "role_type": "model"
+    },
+    {
+      "brand_key": "good_times",
+      "role_type": "nda"
+    },
+    {
+      "brand_key": "good_times",
+      "role_type": "podcast"
+    },
+    {
+      "brand_key": "good_times",
+      "role_type": "promoter"
+    },
+    {
+      "brand_key": "good_times",
+      "role_type": "provider_onboarding"
+    },
+    {
+      "brand_key": "good_times",
+      "role_type": "venue_partner"
+    },
+    {
+      "brand_key": "good-times",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "goodfellas_pizza_wings",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "greek_ball",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "greek-ball",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "grown_ish",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "hakuna_matata",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "halo",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "happy_hour_atl",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "haunted_house",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "help_911",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "huglife",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "huglife",
+      "role_type": "artist"
+    },
+    {
+      "brand_key": "huglife",
+      "role_type": "blogger"
+    },
+    {
+      "brand_key": "huglife",
+      "role_type": "dj"
+    },
+    {
+      "brand_key": "huglife",
+      "role_type": "host"
+    },
+    {
+      "brand_key": "huglife",
+      "role_type": "influencer"
+    },
+    {
+      "brand_key": "huglife",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "huglife",
+      "role_type": "model"
+    },
+    {
+      "brand_key": "huglife",
+      "role_type": "nda"
+    },
+    {
+      "brand_key": "huglife",
+      "role_type": "photographer"
+    },
+    {
+      "brand_key": "huglife",
+      "role_type": "podcast"
+    },
+    {
+      "brand_key": "huglife",
+      "role_type": "promoter"
+    },
+    {
+      "brand_key": "huglife",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "huglife",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "huglife",
+      "role_type": "volunteer"
+    },
+    {
+      "brand_key": "hungry_af",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "iconic",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "infinity_water",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "infinity_water",
+      "role_type": "customer_support"
+    },
+    {
+      "brand_key": "infinity_water",
+      "role_type": "distributor"
+    },
+    {
+      "brand_key": "infinity_water",
+      "role_type": "event_activation"
+    },
+    {
+      "brand_key": "infinity_water",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "infinity_water",
+      "role_type": "nda"
+    },
+    {
+      "brand_key": "infinity_water",
+      "role_type": "retail_stockist"
+    },
+    {
+      "brand_key": "infinity_water",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "infinity_water",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "infinity_water",
+      "role_type": "wholesale"
+    },
+    {
+      "brand_key": "infinity_youth",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "infinity-water",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "inner_circle",
+      "role_type": "beverage_placement"
+    },
+    {
+      "brand_key": "inner_circle",
+      "role_type": "kitchen_partner"
+    },
+    {
+      "brand_key": "inner_circle",
+      "role_type": "revenue_assessment"
+    },
+    {
+      "brand_key": "inner_circle",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "inner_circle",
+      "role_type": "venue_partner"
+    },
+    {
+      "brand_key": "island_water",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "island_water",
+      "role_type": "customer_support"
+    },
+    {
+      "brand_key": "island_water",
+      "role_type": "distributor"
+    },
+    {
+      "brand_key": "island_water",
+      "role_type": "event_activation"
+    },
+    {
+      "brand_key": "island_water",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "island_water",
+      "role_type": "retail_stockist"
+    },
+    {
+      "brand_key": "island_water",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "island_water",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "island_water",
+      "role_type": "wholesale"
+    },
+    {
+      "brand_key": "island-water",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "jingle_ball",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "juneteenth_atlanta",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "just_print",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "just_print",
+      "role_type": "quote"
+    },
+    {
+      "brand_key": "kid_fit_atl",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "kollective",
+      "role_type": "applicant"
+    },
+    {
+      "brand_key": "kollective",
+      "role_type": "general_inquiry"
+    },
+    {
+      "brand_key": "kollective",
+      "role_type": "intern"
+    },
+    {
+      "brand_key": "kollective",
+      "role_type": "investor"
+    },
+    {
+      "brand_key": "kollective",
+      "role_type": "nda"
+    },
+    {
+      "brand_key": "kollective",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "kollective",
+      "role_type": "strategic_partner"
+    },
+    {
+      "brand_key": "kulture",
+      "role_type": "blogger"
+    },
+    {
+      "brand_key": "kulture",
+      "role_type": "nda"
+    },
+    {
+      "brand_key": "kulture",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "lets_talk_about_it",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "little_farmers_of_the_future",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "living_legacy_farms",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "living_legacy_farms",
+      "role_type": "applicant"
+    },
+    {
+      "brand_key": "living_legacy_farms",
+      "role_type": "buyer_wholesale"
+    },
+    {
+      "brand_key": "living_legacy_farms",
+      "role_type": "contractor"
+    },
+    {
+      "brand_key": "living_legacy_farms",
+      "role_type": "farm_visit"
+    },
+    {
+      "brand_key": "living_legacy_farms",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "living_legacy_farms",
+      "role_type": "partner"
+    },
+    {
+      "brand_key": "living_legacy_farms",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "living_legacy_farms",
+      "role_type": "supplier"
+    },
+    {
+      "brand_key": "living_legacy_farms",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "living_legacy_farms",
+      "role_type": "volunteer"
+    },
+    {
+      "brand_key": "living_legends",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "living-legacy-farms",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "lockd",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "luxe",
+      "role_type": "provider_onboarding"
+    },
+    {
+      "brand_key": "luxe_on_demand",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "luxe_on_demand",
+      "role_type": "concierge_application"
+    },
+    {
+      "brand_key": "luxe_on_demand",
+      "role_type": "customer_waitlist"
+    },
+    {
+      "brand_key": "luxe_on_demand",
+      "role_type": "strategic_partner"
+    },
+    {
+      "brand_key": "luxe-on-demand",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "maga",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "maga",
+      "role_type": "blogger"
+    },
+    {
+      "brand_key": "maga",
+      "role_type": "host"
+    },
+    {
+      "brand_key": "maga",
+      "role_type": "influencer"
+    },
+    {
+      "brand_key": "maga",
+      "role_type": "model"
+    },
+    {
+      "brand_key": "maga",
+      "role_type": "nda"
+    },
+    {
+      "brand_key": "maga",
+      "role_type": "podcast"
+    },
+    {
+      "brand_key": "maga",
+      "role_type": "promoter"
+    },
+    {
+      "brand_key": "make_atlanta_great_again",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "marvins_room",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "medicine_water",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "medicine_water",
+      "role_type": "customer_support"
+    },
+    {
+      "brand_key": "medicine_water",
+      "role_type": "distributor"
+    },
+    {
+      "brand_key": "medicine_water",
+      "role_type": "event_activation"
+    },
+    {
+      "brand_key": "medicine_water",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "medicine_water",
+      "role_type": "retail_stockist"
+    },
+    {
+      "brand_key": "medicine_water",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "medicine_water",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "medicine_water",
+      "role_type": "wholesale"
+    },
+    {
+      "brand_key": "members_elite",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "memory_machine",
+      "role_type": "event_booking"
+    },
+    {
+      "brand_key": "memory_machine",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "memory_machine",
+      "role_type": "support"
+    },
+    {
+      "brand_key": "memory_machine",
+      "role_type": "venue_host"
+    },
+    {
+      "brand_key": "mind_studio",
+      "role_type": "applicant"
+    },
+    {
+      "brand_key": "mind_studio",
+      "role_type": "nda"
+    },
+    {
+      "brand_key": "mission_365",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "mission_365",
+      "role_type": "business_sponsor"
+    },
+    {
+      "brand_key": "mission_365",
+      "role_type": "donor_interest"
+    },
+    {
+      "brand_key": "mission_365",
+      "role_type": "organizer"
+    },
+    {
+      "brand_key": "mission_365",
+      "role_type": "provider_onboarding"
+    },
+    {
+      "brand_key": "mission_365",
+      "role_type": "volunteer"
+    },
+    {
+      "brand_key": "mission-365",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "mister_manufacturing",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "mojo_juice",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "mojo_juice",
+      "role_type": "customer_support"
+    },
+    {
+      "brand_key": "mojo_juice",
+      "role_type": "distributor"
+    },
+    {
+      "brand_key": "mojo_juice",
+      "role_type": "event_activation"
+    },
+    {
+      "brand_key": "mojo_juice",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "mojo_juice",
+      "role_type": "retail_stockist"
+    },
+    {
+      "brand_key": "mojo_juice",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "mojo_juice",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "mojo_juice",
+      "role_type": "wholesale"
+    },
+    {
+      "brand_key": "mojo-juice",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "monsters_ball",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "monsters-ball",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "morning_after",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "morning-after",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "morticia",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "mr_mister",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "mr_oyster",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "mr-oyster",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "ms_misses",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "my_birthday",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "myxx",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "nativa_waterworks",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "nativa_waterworks",
+      "role_type": "customer_support"
+    },
+    {
+      "brand_key": "nativa_waterworks",
+      "role_type": "distributor"
+    },
+    {
+      "brand_key": "nativa_waterworks",
+      "role_type": "event_activation"
+    },
+    {
+      "brand_key": "nativa_waterworks",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "nativa_waterworks",
+      "role_type": "retail_stockist"
+    },
+    {
+      "brand_key": "nativa_waterworks",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "nativa_waterworks",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "nativa_waterworks",
+      "role_type": "wholesale"
+    },
+    {
+      "brand_key": "new_years_eve",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "noir",
+      "role_type": "customer_support"
+    },
+    {
+      "brand_key": "noir",
+      "role_type": "distributor"
+    },
+    {
+      "brand_key": "noir",
+      "role_type": "event_activation"
+    },
+    {
+      "brand_key": "noir",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "noir",
+      "role_type": "retail_stockist"
+    },
+    {
+      "brand_key": "noir",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "noir",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "noir",
+      "role_type": "wholesale"
+    },
+    {
+      "brand_key": "nye_at_state_farm",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "og",
+      "role_type": "collaboration"
+    },
+    {
+      "brand_key": "og",
+      "role_type": "media_booking"
+    },
+    {
+      "brand_key": "on_call",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "on_call",
+      "role_type": "applicant"
+    },
+    {
+      "brand_key": "on_call",
+      "role_type": "nda"
+    },
+    {
+      "brand_key": "on_call",
+      "role_type": "provider_onboarding"
+    },
+    {
+      "brand_key": "opium_atl",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "opium_htx",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "opulence_designs",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "paparazzi",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "parking_lot_pimpin",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "parking-lot-pimpin",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "pasta_bish",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "pasta-bish",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "patty_daddy",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "patty-daddy",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "pawchella",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "peace_pizza",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "peace-pizza",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "peaceful_clouds",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "peaceful_clouds",
+      "role_type": "brand_partnership"
+    },
+    {
+      "brand_key": "peaceful_clouds",
+      "role_type": "customer_support"
+    },
+    {
+      "brand_key": "peaceful_clouds",
+      "role_type": "event_activation"
+    },
+    {
+      "brand_key": "peaceful_clouds",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "peaceful_clouds",
+      "role_type": "retail_stockist"
+    },
+    {
+      "brand_key": "peaceful_clouds",
+      "role_type": "supplier"
+    },
+    {
+      "brand_key": "peaceful_clouds",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "peaceful_clouds",
+      "role_type": "wholesale"
+    },
+    {
+      "brand_key": "peaceful_clouds_products",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "pinkie_promise",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "playmakers",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "playmakers_sports_association",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "project_x",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "pronto_energy",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "pronto_energy",
+      "role_type": "customer_support"
+    },
+    {
+      "brand_key": "pronto_energy",
+      "role_type": "distributor"
+    },
+    {
+      "brand_key": "pronto_energy",
+      "role_type": "event_activation"
+    },
+    {
+      "brand_key": "pronto_energy",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "pronto_energy",
+      "role_type": "nda"
+    },
+    {
+      "brand_key": "pronto_energy",
+      "role_type": "retail_stockist"
+    },
+    {
+      "brand_key": "pronto_energy",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "pronto_energy",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "pronto_energy",
+      "role_type": "wholesale"
+    },
+    {
+      "brand_key": "pulse",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "pulse_athletics",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "recess",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "remix",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "remix",
+      "role_type": "dj"
+    },
+    {
+      "brand_key": "remix",
+      "role_type": "nda"
+    },
+    {
+      "brand_key": "reset_therapy",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "resource_exchange",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "resource_exchange",
+      "role_type": "provider_onboarding"
+    },
+    {
+      "brand_key": "resource-exchange",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "ritual",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "rose_ball",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "rose_on_piedmont",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "rose-ball",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "scented_flowers",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "sea_salt_atl",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "secret_society",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "secret_society",
+      "role_type": "dj"
+    },
+    {
+      "brand_key": "secret_society",
+      "role_type": "nda"
+    },
+    {
+      "brand_key": "secret-society",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "snow_ball",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "snow-ball",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "sole_exchange",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "sole_exchange",
+      "role_type": "blogger"
+    },
+    {
+      "brand_key": "sole_exchange",
+      "role_type": "collection_host"
+    },
+    {
+      "brand_key": "sole_exchange",
+      "role_type": "corporate_partner"
+    },
+    {
+      "brand_key": "sole_exchange",
+      "role_type": "dj"
+    },
+    {
+      "brand_key": "sole_exchange",
+      "role_type": "nda"
+    },
+    {
+      "brand_key": "sole_exchange",
+      "role_type": "pickup_request"
+    },
+    {
+      "brand_key": "sole_exchange",
+      "role_type": "shoe_donation"
+    },
+    {
+      "brand_key": "sole_exchange",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "sole_exchange",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "sole_exchange",
+      "role_type": "volunteer"
+    },
+    {
+      "brand_key": "sos",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "sos",
+      "role_type": "early_access"
+    },
+    {
+      "brand_key": "sos",
+      "role_type": "fleet_partner"
+    },
+    {
+      "brand_key": "sos",
+      "role_type": "provider_onboarding"
+    },
+    {
+      "brand_key": "sos",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "soul_sessions",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "soul_sessions",
+      "role_type": "dj"
+    },
+    {
+      "brand_key": "soul_sessions",
+      "role_type": "nda"
+    },
+    {
+      "brand_key": "spark",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "spark",
+      "role_type": "customer_support"
+    },
+    {
+      "brand_key": "spark",
+      "role_type": "distributor"
+    },
+    {
+      "brand_key": "spark",
+      "role_type": "event_activation"
+    },
+    {
+      "brand_key": "spark",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "spark",
+      "role_type": "retail_stockist"
+    },
+    {
+      "brand_key": "spark",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "spark",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "spark",
+      "role_type": "wholesale"
+    },
+    {
+      "brand_key": "stitch",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "stush",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "stush",
+      "role_type": "host"
+    },
+    {
+      "brand_key": "stush",
+      "role_type": "model"
+    },
+    {
+      "brand_key": "stush",
+      "role_type": "nda"
+    },
+    {
+      "brand_key": "stush",
+      "role_type": "podcast"
+    },
+    {
+      "brand_key": "stush",
+      "role_type": "promoter"
+    },
+    {
+      "brand_key": "sundays_best",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "sweet_tooth",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "sweet-tooth",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "synergy_sounds",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "synergy-sounds",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "taco_yaki",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "taco-yaki",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "taste_of_art",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "taste_of_art",
+      "role_type": "artist"
+    },
+    {
+      "brand_key": "taste_of_art",
+      "role_type": "blogger"
+    },
+    {
+      "brand_key": "taste_of_art",
+      "role_type": "dj"
+    },
+    {
+      "brand_key": "taste_of_art",
+      "role_type": "nda"
+    },
+    {
+      "brand_key": "taste_of_art",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "taste-of-art",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "tea_time_golf",
+      "role_type": "solo_entry"
+    },
+    {
+      "brand_key": "tea_time_golf",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "tea_time_golf",
+      "role_type": "team_entry"
+    },
+    {
+      "brand_key": "tea_time_golf",
+      "role_type": "volunteer"
+    },
+    {
+      "brand_key": "the_attorney_network",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "the_brand_studio",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "the_casper_group",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "the_fraternity",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "the_gentlemans_club",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "the_inner_circle",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "the_kollective_ent",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "the_kulture",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "the_law",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "the_london",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "the_mind_studio",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "the_nation",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "the_peoples_dept",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "the_puff_dept",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "the_sovereign_nation",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "the_tribe_memphis",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "the_umbrella_group",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "the_university",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "the_vote",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "the_vote",
+      "role_type": "civic_partner"
+    },
+    {
+      "brand_key": "the_vote",
+      "role_type": "correction"
+    },
+    {
+      "brand_key": "the_vote",
+      "role_type": "media"
+    },
+    {
+      "brand_key": "the-casper-group",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "theory_wellness",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "tossd",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "trail_blazers",
+      "role_type": "applicant"
+    },
+    {
+      "brand_key": "trail_blazers",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "trail_blazers",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "trailblazers",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "tribal_water",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "tribal_water",
+      "role_type": "customer_support"
+    },
+    {
+      "brand_key": "tribal_water",
+      "role_type": "distributor"
+    },
+    {
+      "brand_key": "tribal_water",
+      "role_type": "event_activation"
+    },
+    {
+      "brand_key": "tribal_water",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "tribal_water",
+      "role_type": "retail_stockist"
+    },
+    {
+      "brand_key": "tribal_water",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "tribal_water",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "tribal_water",
+      "role_type": "wholesale"
+    },
+    {
+      "brand_key": "tribal-water",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "tulum_atl",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "tulum_htx",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "umbrella_accounting",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "umbrella_auto_exchange",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "umbrella_clean_services",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "umbrella_group",
+      "role_type": "applicant"
+    },
+    {
+      "brand_key": "umbrella_group",
+      "role_type": "booking_request"
+    },
+    {
+      "brand_key": "umbrella_group",
+      "role_type": "contractor_provider"
+    },
+    {
+      "brand_key": "umbrella_group",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "umbrella_group",
+      "role_type": "partnership"
+    },
+    {
+      "brand_key": "umbrella_group",
+      "role_type": "quote"
+    },
+    {
+      "brand_key": "umbrella_group",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "umbrella_realty_group",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "umbrella_travel",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "underground_king",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "underground-king",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "washington_parq",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "whip_addict",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "winter_wonderland",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "winter-wonderland",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "women_make_the_world_go_round",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "wrst_bhvr",
+      "role_type": "ambassador"
+    },
+    {
+      "brand_key": "wrst_bhvr",
+      "role_type": "dj"
+    },
+    {
+      "brand_key": "wrst_bhvr",
+      "role_type": "nda"
+    },
+    {
+      "brand_key": "xxx_vodka",
+      "role_type": "customer_support"
+    },
+    {
+      "brand_key": "xxx_vodka",
+      "role_type": "distributor"
+    },
+    {
+      "brand_key": "xxx_vodka",
+      "role_type": "event_activation"
+    },
+    {
+      "brand_key": "xxx_vodka",
+      "role_type": "inquiry"
+    },
+    {
+      "brand_key": "xxx_vodka",
+      "role_type": "retail_stockist"
+    },
+    {
+      "brand_key": "xxx_vodka",
+      "role_type": "sponsor"
+    },
+    {
+      "brand_key": "xxx_vodka",
+      "role_type": "vendor"
+    },
+    {
+      "brand_key": "xxx_vodka",
+      "role_type": "wholesale"
+    }
+  ]
+}
