@@ -3,7 +3,7 @@ import path from 'node:path';
 import { chromium } from 'playwright';
 
 // Visual + validation testing against production. EVERY POST is intercepted; no data sent.
-const focus = new Set(['american_track_field','inner_circle','memory_machine','sole_exchange','good_times','sos','mission_365','luxe_on_demand','the_vote','bevco','casper','dr_dorsey','kollective','og','bodega','stush','fenyx','bare','maga','angel_wings','patty_daddy','taco_yaki','morning_after','mojo_juice','espresso_co']);
+const focus = new Set(['members_elite','pasta_bish','sweet_tooth','mr_oyster','peace_pizza','american_dragon','ora','otini','casa_cantina','double_zero','tempo','nativa','tribal','prive','xxx','american_track_field','inner_circle','memory_machine','sole_exchange','good_times','sos','mission_365','luxe_on_demand','the_vote','bevco','casper','dr_dorsey','kollective','og','bodega','stush','fenyx','bare','maga','angel_wings','patty_daddy','taco_yaki','morning_after','mojo_juice','espresso_co']);
 const rows=JSON.parse(fs.readFileSync('scripts/qa-forms-routes.json','utf8')).routes;
 const shard=Number(process.env.QA_SHARD||0), total=Number(process.env.QA_TOTAL||1);
 const work=rows.filter((_,i)=>i%total===shard);
@@ -22,7 +22,7 @@ for(const rec of work){
   await page.route('**/*',async routeReq=>{
     const req=routeReq.request();
     if(req.method()!=='GET' && req.method()!=='HEAD' && req.method()!=='OPTIONS') {
-      if(req.url().includes('khg-form-intake') && req.method()==='POST') return routeReq.fulfill({status:201,contentType:'application/json',body:JSON.stringify({ok:true,submission_ref:'QA-SIMULATED-NO-WRITE',submission:{submission_ref:'QA-SIMULATED-NO-WRITE'}})});
+      if(req.url().includes('khg-form-intake') && req.method()==='POST') return routeReq.fulfill({status:201,contentType:'application/json',body:JSON.stringify(req.url().includes('action=upload')?{ok:true,file:{path:'qa/no-write-test.pdf'}}:{ok:true,submission_ref:'QA-SIMULATED-NO-WRITE',submission:{submission_ref:'QA-SIMULATED-NO-WRITE'}})});
       return routeReq.abort('blockedbyclient');
     }
     return routeReq.continue();
@@ -48,10 +48,12 @@ for(const rec of work){
        try{
         const textInputs=form.locator('input:not([type=checkbox]):not([type=radio]):not([type=file]):not([tabindex="-1"])');
         const n=await textInputs.count();
-        for(let i=0;i<n;i++){const el=textInputs.nth(i),type=await el.getAttribute('type');if(type==='hidden')continue;await el.fill(type==='email'?'qa-form-test@invalid.example':type==='tel'?'2025550110':type==='url'?'https://example.com/qa':'QA sample only');}
+        for(let i=0;i<n;i++){const el=textInputs.nth(i),type=await el.getAttribute('type');if(type==='hidden')continue;await el.fill(type==='email'?'qa-form-test@invalid.example':type==='tel'?'2025550110':type==='url'?'https://example.com/qa':type==='number'?'10':'QA sample only');}
         const ta=form.locator('textarea');for(let i=0;i<await ta.count();i++)await ta.nth(i).fill('QA automated browser simulation only - no personal or live business data.');
         const selects=form.locator('select');for(let i=0;i<await selects.count();i++){const sel=selects.nth(i);const opts=await sel.locator('option').evaluateAll(os=>os.map(o=>o.value).filter(Boolean));if(opts.length)await sel.selectOption(opts[0]);}
         const check=form.locator('input[type=checkbox]');for(let i=0;i<await check.count();i++)await check.nth(i).check({force:true});
+        const cv=form.locator('canvas'); if(await cv.count()){const box=await cv.first().boundingBox();if(box){await page.mouse.move(box.x+40,box.y+50);await page.mouse.down();await page.mouse.move(box.x+160,box.y+70,{steps:10});await page.mouse.up();}}
+        const fileInputs=form.locator('input[type=file]');for(let i=0;i<await fileInputs.count();i++){await fileInputs.nth(i).setInputFiles({name:'qa-placeholder.pdf',mimeType:'application/pdf',buffer:Buffer.from('%PDF-1.4\n% QA synthetic file only\n%%EOF')}).catch(()=>{});}
         const chipButtons=form.locator('button[type=button]');const nn=await chipButtons.count();
         // Role multi-select chips: click choices; skip CLEAR SIGNATURE and next-step buttons.
         for(let i=0;i<Math.min(nn,28);i++){const b=chipButtons.nth(i);const txt=(await b.innerText()).trim().toLowerCase();if(/clear|back|next|upload|signature/.test(txt))continue;if(await b.isVisible())await b.click({force:true,timeout:1300}).catch(()=>{});}
