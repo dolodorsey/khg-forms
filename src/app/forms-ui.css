@@ -1,0 +1,27 @@
+/* Scoped shared-form improvements: retain distinct brand colors and current page layouts. */
+main[data-khg-form="true"] { -webkit-font-smoothing: antialiased; }
+main[data-khg-form="true"] input,
+main[data-khg-form="true"] select,
+main[data-khg-form="true"] textarea,
+main[data-khg-form="true"] button { transition: box-shadow .15s ease, border-color .15s ease, transform .15s ease; }
+main[data-khg-form="true"] input:focus-visible,
+main[data-khg-form="true"] select:focus-visible,
+main[data-khg-form="true"] textarea:focus-visible,
+main[data-khg-form="true"] button:focus-visible,
+main[data-khg-form="true"] a:focus-visible { outline: 3px solid #2C63AA !important; outline-offset: 2px; border-color: #2C63AA !important; }
+main[data-khg-form="true"] input[aria-invalid="true"],
+main[data-khg-form="true"] textarea[aria-invalid="true"],
+main[data-khg-form="true"] select[aria-invalid="true"] { border-color: #B42318 !important; }
+main[data-khg-form="true"] input:not([type="checkbox"]),
+main[data-khg-form="true"] select { min-height: 45px; }
+main[data-khg-form="true"] button:hover:not(:disabled) { filter: brightness(.95); }
+@media (max-width: 480px) {
+  main[data-khg-form="true"] { padding: 18px 12px 54px !important; }
+  main[data-khg-form="true"] input,
+  main[data-khg-form="true"] select,
+  main[data-khg-form="true"] textarea { font-size: 16px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  main[data-khg-form="true"] *, main[data-khg-form="true"] *::before,
+  main[data-khg-form="true"] *::after { transition: none !important; scroll-behavior: auto !important; }
+}
