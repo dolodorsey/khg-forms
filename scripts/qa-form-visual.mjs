@@ -12,7 +12,7 @@ fs.mkdirSync(root,{recursive:true});
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 const results=[];
 for(const rec of work){
- const route='/f/'+rec.brand_key.replaceAll('_','-')+'/'+rec.role_type.replaceAll('_','-');
+ const route='/f/'+rec.brand_key.replaceAll('_','-')+'/'+rec.role_type.replaceAll('_','-')+'?brand_key='+encodeURIComponent(rec.brand_key);
  const safe=rec.brand_key.replace(/[^a-z0-9_-]/g,'_')+'--'+rec.role_type.replace(/[^a-z0-9_-]/g,'_');
  const item={brand:rec.brand_key,role:rec.role_type,path:route,desktop:'pending',mobile:'pending',validation:'pending',filled_simulation:'not_run',errors:[]};
  for(const device of ['desktop','mobile']){
@@ -46,6 +46,11 @@ for(const rec of work){
    if(overflow)item.errors.push(device+' horizontal overflow');
    item[device]=response?.status()===200?'rendered':'http_'+response?.status();
    if(device==='desktop'){
+     const api='https://dzlmtvodpyhetvektfuo.supabase.co/functions/v1/khg-form-intake?'+new URLSearchParams({brand_key:rec.brand_key,role_type:rec.role_type});
+     const cfgResponse=await page.request.get(api,{headers:{Origin:'https://forms.thekollectivehospitality.com'},timeout:16000});
+     const cfgPayload=await cfgResponse.json().catch(()=>({}));
+     item.exact_key_check=cfgResponse.status()===200 && cfgPayload.config?.brand_key===rec.brand_key && cfgPayload.config?.role_type===rec.role_type ? 'pass':'failed';
+     if(item.exact_key_check!=='pass')item.errors.push('exact key mismatch '+cfgResponse.status());
      const form=page.locator('form').first();
      const submit=form.locator('button[type=submit]').last();
      await submit.click({timeout:6000});
