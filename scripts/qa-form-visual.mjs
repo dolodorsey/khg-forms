@@ -62,7 +62,9 @@ for(const rec of work){
        try{
         const textInputs=form.locator('input:not([type=checkbox]):not([type=radio]):not([type=file]):not([tabindex="-1"])');
         const n=await textInputs.count();
-        for(let i=0;i<n;i++){const el=textInputs.nth(i),type=await el.getAttribute('type');if(type==='hidden')continue;await el.fill(type==='email'?'qa-form-test@invalid.example':type==='tel'?'2025550110':type==='url'?'https://example.com/qa':type==='number'?'10':'QA sample only');}
+        for(let i=0;i<n;i++){const el=textInputs.nth(i),type=await el.getAttribute('type');if(type==='hidden')continue;const samples={email:'qa-form-test@invalid.example',tel:'2025550110',url:'https://example.com/qa',number:'10',date:'2026-11-20','datetime-local':'2026-11-20T12:00',time:'12:00',month:'2026-11',week:'2026-W47',color:'#223366'};
+         if(['hidden','range','file','submit','reset'].includes(type))continue;
+         await el.fill(samples[type]||'QA sample only');}
         const ta=form.locator('textarea');for(let i=0;i<await ta.count();i++)await ta.nth(i).fill('QA automated browser simulation only - no personal or live business data.');
         const selects=form.locator('select');for(let i=0;i<await selects.count();i++){const sel=selects.nth(i);const opts=await sel.locator('option').evaluateAll(os=>os.map(o=>o.value).filter(Boolean));if(opts.length)await sel.selectOption(opts[0]);}
         const check=form.locator('input[type=checkbox]');for(let i=0;i<await check.count();i++)await check.nth(i).check({force:true});
