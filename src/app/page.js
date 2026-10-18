@@ -33,6 +33,7 @@ export default function Home() {
       <div style={S.header}>
         <div style={S.title}>KHG FORMS DIRECTORY</div>
         <div style={S.sub}>Applications, inquiries, quotes, registrations & onboarding across all KHG brands</div>
+        <div style={{marginTop:16}}><a href="/focus" style={{display:"inline-block",borderRadius:10,background:"#D4A853",color:"#121212",fontWeight:800,padding:"12px 20px",textDecoration:"none",fontSize:13}}>OPEN CURRENT FOCUS FORMS →</a></div>
         <div style={{ fontSize: 11, color: "#555", marginTop: 4 }}>{configs.length} forms across {brands.length} brands</div>
       </div>
       <div style={S.filters}>
