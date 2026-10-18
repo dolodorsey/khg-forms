@@ -1,0 +1,20 @@
+name: Verify Current Focus Forms
+on:
+  push:
+    paths:
+      - 'src/app/focus/**'
+      - 'src/app/f/**'
+      - 'scripts/verify-focus-forms.mjs'
+      - '.github/workflows/focus-forms-verify.yml'
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check all active-focus form configurations
+        run: node scripts/verify-focus-forms.mjs
