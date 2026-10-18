@@ -29,8 +29,17 @@ for(const rec of work){
   });
   page.on('pageerror',e=>item.errors.push(device+' JS '+String(e).slice(0,250)));
   try{
-   const response=await page.goto('https://forms.thekollectivehospitality.com'+route,{waitUntil:'domcontentloaded',timeout:20000});
-   await page.locator('form').first().waitFor({state:'visible',timeout:16000});
+   let response;
+   for (let attempt=0;attempt<3;attempt++){
+     try {
+       response=await page.goto('https://forms.thekollectivehospitality.com'+route,{waitUntil:'domcontentloaded',timeout:20000});
+       await page.locator('form').first().waitFor({state:'visible',timeout:15000});
+       break;
+     } catch(loadError) {
+       if(attempt===2)throw loadError;
+       await page.waitForTimeout(1200*(attempt+1));
+     }
+   }
    await page.locator('h1').first().waitFor({state:'visible',timeout:7000});
    await page.screenshot({path:path.join(root,safe+'--'+device+'.png'),fullPage:true,animations:'disabled'});
    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+6);
