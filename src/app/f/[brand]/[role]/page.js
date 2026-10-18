@@ -13,7 +13,12 @@ const pretty = (value = "") => value.replace(/_/g, " ").replace(/\b\w/g, (m) => 
 export default function UniversalFormPage() {
   const params = useParams();
   const searchParams = useSearchParams();
-  const brandKey = normalize(params?.brand);
+  const normalizedBrandKey = normalize(params?.brand);
+  const rawBrandKey = searchParams?.get("brand_key") || "";
+  // Optional exact-key alias for legacy records such as "good-times" vs "good_times".
+  // Only allow aliases that normalize to this same URL brand to prevent cross-brand routing.
+  const brandKey = /^[a-z0-9_-]{2,120}$/.test(rawBrandKey) &&
+    rawBrandKey.replaceAll("-", "_") === normalizedBrandKey ? rawBrandKey : normalizedBrandKey;
   const roleType = normalize(params?.role);
 
   const [config, setConfig] = useState(null);
