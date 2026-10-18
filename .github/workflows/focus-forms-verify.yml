@@ -5,6 +5,7 @@ on:
       - 'src/app/focus/**'
       - 'src/app/f/**'
       - 'scripts/verify-focus-forms.mjs'
+      - 'scripts/qa-forms-routes.json'
       - '.github/workflows/focus-forms-verify.yml'
   workflow_dispatch:
   schedule:
