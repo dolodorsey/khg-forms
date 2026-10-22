@@ -247,8 +247,10 @@ export default function UniversalFormPage() {
         body: JSON.stringify(payload),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "SUBMISSION_FAILED");
-      setSubmitted(data?.submission || { submission_ref: data?.submission_ref || "RECEIVED" });
+      if (!res.ok || data?.ok !== true || !data?.submission?.submission_ref) {
+        throw new Error(data?.error || "SUBMISSION_NOT_CONFIRMED");
+      }
+      setSubmitted(data.submission);
       setStep(0);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e) {
