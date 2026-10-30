@@ -6,10 +6,97 @@ import { useParams, useSearchParams } from "next/navigation";
 const ENDPOINT = "https://dzlmtvodpyhetvektfuo.supabase.co/functions/v1/khg-form-intake";
 const CITIES = ["Atlanta", "Houston", "Washington, DC", "Los Angeles", "Charlotte", "Miami", "New York", "Dallas", "Chicago", "New Orleans", "Las Vegas", "Phoenix", "Other"];
 const SIZES = ["XS", "S", "M", "L", "XL", "2XL", "3XL"];
+const REQUIRED_MESSAGE = "Please complete the required fields.";
+const PILL_MAX_OPTIONS = 6;
 
 const normalize = (value = "") => decodeURIComponent(value).replace(/-/g, "_").toLowerCase();
-const pretty = (value = "") => value.replace(/_/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
+const pretty = (value = "") => value.replace(/[_-]/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
 
+// ---------- copy helpers ----------
+const KEEP_UPPER = new Set(["DJ", "VIP", "NYC", "ATL", "LA", "DC", "USA", "US", "KHG", "MC", "CEO", "PR", "UGC", "RSVP", "FAQ", "HBCU", "NBA", "NFL", "WNBA", "ATF", "OG", "XXX", "SOS", "II", "III", "IV", "TV", "LLC", "NIL", "AAU", "B2B", "RTD", "ID", "NOC"]);
+const SMALL_WORDS = new Set(["a", "an", "and", "as", "at", "by", "for", "in", "of", "on", "or", "the", "to", "vs", "with"]);
+
+// Only rewrites text that arrives fully upper-case; mixed-case copy is left as authored.
+function smartCase(text = "") {
+  if (!text || /[a-z]/.test(text)) return text;
+  let index = 0;
+  return text.split(/(\s+)/).map((token) => {
+    if (/^\s+$/.test(token)) return token;
+    const bare = token.replace(/[^A-Z0-9&]/g, "");
+    const position = index++;
+    if (KEEP_UPPER.has(bare)) return token;
+    const lower = token.toLowerCase();
+    if (position > 0 && SMALL_WORDS.has(lower)) return lower;
+    return lower.replace(/(^|[-/(])([a-z])/g, (_, p, c) => p + c.toUpperCase());
+  }).join("");
+}
+
+function parseTitle(config) {
+  const raw = String(config.form_title || pretty(config.role_type || "")).trim();
+  let brand = "";
+  let rest = raw;
+  const dash = raw.split(/\s+[—–]\s+/);
+  if (dash.length > 1) { brand = dash[0]; rest = dash.slice(1).join(" — "); }
+  const dot = rest.split(/\s+·\s+/);
+  const title = dot[0];
+  const meta = dot.slice(1).join(" · ");
+  return {
+    brand: smartCase(brand) || pretty(config.brand_key || ""),
+    title: smartCase(title),
+    meta: smartCase(meta),
+  };
+}
+
+function splitSubtitle(text = "") {
+  const sentences = String(text).split(/(?<=[.!?])\s+(?=[A-Z0-9])/).map((s) => s.trim()).filter(Boolean);
+  return { lede: sentences[0] || "", notes: sentences.slice(1) };
+}
+
+function detailsTitle(config) {
+  if (config.details_title) return config.details_title;
+  const haystack = `${config.role_type} ${config.form_title}`.toLowerCase();
+  if (haystack.includes("athlete") || haystack.includes("tryout")) return "Athlete profile";
+  if (haystack.includes("coach")) return "Coaching background";
+  if (haystack.includes("team")) return "Team details";
+  if (haystack.includes("sponsor")) return "Sponsorship details";
+  if (haystack.includes("vendor")) return "Vendor details";
+  if (haystack.includes("venue")) return "Venue details";
+  return "Details";
+}
+
+// ---------- color helpers ----------
+function hexToRgb(hex = "") {
+  const h = hex.replace("#", "").trim();
+  const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+  if (!/^[0-9a-f]{6}$/i.test(full)) return null;
+  return [0, 2, 4].map((i) => parseInt(full.slice(i, i + 2), 16));
+}
+const toHex = (rgb) => "#" + rgb.map((v) => Math.round(Math.max(0, Math.min(255, v))).toString(16).padStart(2, "0")).join("");
+function luminance(rgb) {
+  const [r, g, b] = rgb.map((v) => { const c = v / 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+const contrast = (a, b) => { const la = luminance(a), lb = luminance(b); return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05); };
+const mix = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
+
+function brandTokens(color) {
+  const brand = hexToRgb(color) || hexToRgb("#2B3A55");
+  const white = [255, 255, 255];
+  const black = [17, 19, 22];
+  let ink = brand;
+  for (let t = 0.08; contrast(ink, white) < 4.6 && t <= 1; t += 0.08) ink = mix(brand, black, t);
+  const onBrand = contrast(brand, white) >= contrast(brand, black) ? "#FFFFFF" : "#111316";
+  return {
+    "--kf-brand": toHex(brand),
+    "--kf-ink": toHex(ink),
+    "--kf-on-brand": onBrand,
+    "--kf-brand-deep": toHex(mix(brand, black, 0.35)),
+    "--kf-tint": `rgba(${brand.join(",")}, 0.09)`,
+    "--kf-ring": `rgba(${brand.join(",")}, 0.28)`,
+  };
+}
+
+// ---------- page ----------
 export default function UniversalFormPage() {
   const params = useParams();
   const searchParams = useSearchParams();
@@ -35,6 +122,8 @@ export default function UniversalFormPage() {
   const [honeypot, setHoneypot] = useState("");
   const [acknowledgmentChecked, setAcknowledgmentChecked] = useState(false);
   const [scrolledToBottom, setScrolledToBottom] = useState(false);
+  const [signatureDrawn, setSignatureDrawn] = useState(false);
+  const [showMoreLinks, setShowMoreLinks] = useState(false);
   const canvasRef = useRef(null);
   const drawingRef = useRef(false);
   const hasSignatureRef = useRef(false);
@@ -93,8 +182,33 @@ export default function UniversalFormPage() {
     return () => { active = false; };
   }, [brandKey, roleType]);
 
-  const update = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
-  const updateRole = (key, value) => setForm((prev) => ({ ...prev, role_data: { ...prev.role_data, [key]: value } }));
+  useEffect(() => {
+    if (config?.form_title && typeof document !== "undefined") {
+      const t = parseTitle(config);
+      document.title = [t.title, t.brand].filter(Boolean).join(" — ");
+    }
+  }, [config]);
+
+  // Once every flagged field is fixed, the "complete the required fields" banner has done its job.
+  useEffect(() => {
+    if (error === REQUIRED_MESSAGE && Object.keys(fieldErrors).length === 0) setError("");
+  }, [fieldErrors, error]);
+
+  const clearError = (...keys) => setFieldErrors((prev) => {
+    if (!keys.some((k) => prev[k])) return prev;
+    const next = { ...prev };
+    keys.forEach((k) => delete next[k]);
+    return next;
+  });
+
+  const update = (key, value) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+    clearError(key, key === "instagram_handle" ? "instagram" : key, key === "tiktok_handle" ? "tiktok" : key, key === "website_url" ? "website" : key);
+  };
+  const updateRole = (key, value) => {
+    setForm((prev) => ({ ...prev, role_data: { ...prev.role_data, [key]: value } }));
+    clearError(key);
+  };
   const updateShipping = (key, value) => setForm((prev) => ({ ...prev, shipping_address: { ...prev.shipping_address, [key]: value } }));
 
   function toggleMulti(key, option) {
@@ -107,9 +221,10 @@ export default function UniversalFormPage() {
     canvasRef.current = canvas;
     canvas.dataset.ready = "true";
     const ctx = canvas.getContext("2d");
-    ctx.lineWidth = 2.2;
+    ctx.lineWidth = 2.6;
     ctx.lineCap = "round";
-    ctx.strokeStyle = "#151515";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = "#15171A";
 
     const point = (event) => {
       const rect = canvas.getBoundingClientRect();
@@ -130,7 +245,11 @@ export default function UniversalFormPage() {
       const p = point(event);
       ctx.lineTo(p.x, p.y);
       ctx.stroke();
-      hasSignatureRef.current = true;
+      if (!hasSignatureRef.current) {
+        hasSignatureRef.current = true;
+        setSignatureDrawn(true);
+        clearError("signature");
+      }
     };
     const stop = () => { drawingRef.current = false; };
     canvas.addEventListener("mousedown", start);
@@ -146,6 +265,7 @@ export default function UniversalFormPage() {
     if (!canvas) return;
     canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
     hasSignatureRef.current = false;
+    setSignatureDrawn(false);
   }
 
   function validate() {
@@ -171,15 +291,25 @@ export default function UniversalFormPage() {
       }
     });
     if (form.email.trim() && !/^[^@ ]+@[^@ ]+[.][^@ ]+$/.test(form.email.trim())) errors.email = "Enter a valid email address.";
-    if (form.phone.trim() && form.phone.replace(/[^0-9]/g, "").length < 10) errors.phone = "Enter a valid phone number.";
+    if (form.phone.trim() && form.phone.replace(/[^0-9]/g, "").length < 10) errors.phone = "Enter a 10-digit phone number.";
     if (form.website_url.trim()) {
       try { const url = new URL(form.website_url); if (!["http:", "https:"].includes(url.protocol)) errors.website_url = "Enter a valid website URL."; }
       catch { errors.website_url = "Enter a full website URL, starting with https://"; }
     }
-    if (config?.requires_acknowledgment && !acknowledgmentChecked) errors.acknowledgment = "You must accept the agreement.";
-    if (config?.requires_signature_canvas && !hasSignatureRef.current) errors.signature = "Signature required.";
+    if (config?.requires_acknowledgment && !acknowledgmentChecked) errors.acknowledgment = "Accept the agreement to continue.";
+    if (config?.requires_signature_canvas && !hasSignatureRef.current) errors.signature = "Draw your signature in the box.";
+    if (errors.tiktok || errors.website || errors.website_url) setShowMoreLinks(true);
     setFieldErrors(errors);
     return Object.keys(errors).length === 0;
+  }
+
+  function focusFirstInvalid() {
+    window.setTimeout(() => {
+      const el = document.querySelector('[data-khg-form] [data-invalid="true"]');
+      if (!el) return;
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.querySelector("input:not([type=hidden]), select, textarea, button")?.focus({ preventScroll: true });
+    }, 30);
   }
 
   async function uploadFiles() {
@@ -209,8 +339,8 @@ export default function UniversalFormPage() {
   async function handleSubmit(event) {
     event?.preventDefault?.();
     if (!validate()) {
-      setError("Please complete the required fields.");
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      setError(REQUIRED_MESSAGE);
+      focusFirstInvalid();
       return;
     }
     setSubmitting(true);
@@ -239,7 +369,7 @@ export default function UniversalFormPage() {
         marketing_consent: marketingConsent,
         email_consent: marketingConsent,
         _company_website: honeypot,
-        metadata: { renderer: "khg-forms-v2", route: `/f/${brandKey}/${roleType}` },
+        metadata: { renderer: "khg-forms-v3", route: `/f/${brandKey}/${roleType}` },
       };
       const res = await fetch(ENDPOINT, {
         method: "POST",
@@ -255,324 +385,473 @@ export default function UniversalFormPage() {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e) {
       setError(humanError(e?.message));
-      window.scrollTo({ top: 0, behavior: "smooth" });
     } finally {
       setSubmitting(false);
     }
   }
 
-  if (loading) return <Shell><div style={styles.loading}>LOADING FORM…</div></Shell>;
-  if (!config) return <Shell><Message title="FORM NOT AVAILABLE" body={error || "This form is unavailable."} /></Shell>;
+  if (loading) return <LoadingShell />;
+  if (!config) return (
+    <Shell tokens={brandTokens("#2B3A55")}>
+      <Band brand="The Kollective Hospitality Group" title="This form isn't available" lede={error || "The link may be out of date. Check with the person who sent it."} />
+    </Shell>
+  );
 
-  const accent = config.brand_color || "#B68A42";
+  const tokens = brandTokens(config.brand_color || "#B68A42");
+  const heading = parseTitle(config);
+  const { lede, notes } = splitSubtitle(config.form_subtitle);
   const customFields = Array.isArray(config.custom_fields) ? config.custom_fields : [];
+  const requiredCore = new Set(["first_name", "last_name", "email", ...(config.required_fields || [])]);
+  const isReq = (...keys) => keys.some((k) => requiredCore.has(k));
 
   if (submitted && postSignup.length > 0) {
     const current = postSignup[Math.min(step, postSignup.length - 1)];
     const last = step >= postSignup.length - 1;
     return (
-      <Shell accent={accent}>
-        <Header config={config} accent={accent} />
-        <div style={styles.card}>
-          <div style={{ ...styles.eyebrow, color: accent }}>NEXT STEP {step + 1} OF {postSignup.length}</div>
-          <h2 style={styles.cardTitle}>{current?.instruction_title || "NEXT STEP"}</h2>
-          <div style={styles.bodyText}>{current?.instruction_body}</div>
-          {current?.action_url && <a href={current.action_url} target="_blank" rel="noreferrer" style={{ ...styles.actionLink, background: accent }}>OPEN STEP</a>}
+      <Shell tokens={tokens}>
+        <Band brand={heading.brand} title={heading.title} meta={heading.meta} compact />
+        <div className="kf-sheet kf-sheet--narrow">
+          <div className="kf-steps-count">Next step {step + 1} of {postSignup.length}</div>
+          <h2 className="kf-step-title">{current?.instruction_title || "Next step"}</h2>
+          <div className="kf-prose">{current?.instruction_body}</div>
+          {current?.action_url && <a href={current.action_url} target="_blank" rel="noreferrer" className="kf-link-button">Open this step</a>}
+          <button className="kf-submit" onClick={() => last ? window.location.assign("/") : setStep((s) => s + 1)}>
+            {last ? "Done" : "Continue"}
+          </button>
         </div>
-        <button style={{ ...styles.button, background: accent }} onClick={() => last ? window.location.assign("/") : setStep((s) => s + 1)}>
-          {last ? "DONE" : "CONTINUE"}
-        </button>
       </Shell>
     );
   }
 
   if (submitted) {
     return (
-      <Shell accent={accent}>
-        <Header config={config} accent={accent} />
-        <div style={{ ...styles.card, textAlign: "center", paddingTop: 38, paddingBottom: 38 }}>
-          <div style={{ fontSize: 34, marginBottom: 12 }}>✓</div>
-          <h1 style={styles.successTitle}>{config.success_title || "SUBMISSION RECEIVED"}</h1>
-          <p style={styles.successBody}>{config.success_body || "Your submission has been received. Our team will follow up."}</p>
-          {submitted?.submission_ref && <div style={styles.reference}>REFERENCE: {submitted.submission_ref}</div>}
+      <Shell tokens={tokens}>
+        <Band brand={heading.brand} title={heading.title} meta={heading.meta} compact />
+        <div className="kf-sheet kf-sheet--narrow kf-success">
+          <svg className="kf-success-mark" viewBox="0 0 52 52" aria-hidden="true">
+            <circle cx="26" cy="26" r="24" />
+            <path d="M15 27l7 7 15-16" />
+          </svg>
+          <h1 className="kf-success-title">{smartCase(config.success_title || "Submission received")}</h1>
+          <p className="kf-prose">{config.success_body || "Your submission has been received. Our team will follow up."}</p>
+          {submitted?.submission_ref && (
+            <div className="kf-reference">
+              <span>Reference</span>
+              <strong>{submitted.submission_ref}</strong>
+            </div>
+          )}
         </div>
       </Shell>
     );
   }
 
-  return (
-    <Shell accent={accent}>
-      <Header config={config} accent={accent} />
-      {error && <div style={styles.errorBanner}>{error}</div>}
-      <form onSubmit={handleSubmit} noValidate>
-        <Section title="Contact Information" accent={accent}>
-          <div style={styles.twoCol}>
-            <CoreInput label="First Name" name="first_name" value={form.first_name} onChange={update} required error={fieldErrors.first_name} />
-            <CoreInput label="Last Name" name="last_name" value={form.last_name} onChange={update} required error={fieldErrors.last_name} />
-          </div>
-          <div style={styles.twoCol}>
-            <CoreInput label="Email" name="email" type="email" value={form.email} onChange={update} required error={fieldErrors.email} />
-            <CoreInput label="Phone" name="phone" type="tel" value={form.phone} onChange={update} required={(config.required_fields || []).includes("phone")} error={fieldErrors.phone} />
-          </div>
-          <div style={styles.twoCol}>
-            <CoreSelect label="City / Market" name="city" value={form.city} onChange={update} options={CITIES} required={(config.required_fields || []).includes("city")} error={fieldErrors.city} />
-            <CoreInput label="Instagram" name="instagram_handle" value={form.instagram_handle} onChange={update} required={(config.required_fields || []).includes("instagram") || (config.required_fields || []).includes("instagram_handle")} error={fieldErrors.instagram || fieldErrors.instagram_handle} />
-          </div>
-          <div style={styles.twoCol}>
-            <CoreInput label="TikTok" name="tiktok_handle" value={form.tiktok_handle} onChange={update} />
-            <CoreInput label="Website" name="website_url" type="url" value={form.website_url} onChange={update} error={fieldErrors.website_url} />
-          </div>
-        </Section>
+  // ----- progress model -----
+  const filled = (v) => !(v == null || v === "" || v === false || (Array.isArray(v) && !v.length));
+  const coreValue = (k) => form[{ instagram: "instagram_handle", tiktok: "tiktok_handle", website: "website_url" }[k] || k] ?? form.role_data[k];
+  const sections = [];
+  sections.push({ id: "kf-contact", title: "Contact", req: [...requiredCore].map((k) => filled(coreValue(k))) });
+  if (customFields.length) sections.push({
+    id: "kf-details", title: detailsTitle(config),
+    req: customFields.filter((f) => f.required).map((f) => f.type === "file" ? Boolean(files[f.key] || form.role_data[f.key]) : f.type === "checkbox" ? form.role_data[f.key] === true : filled(form.role_data[f.key])),
+  });
+  if (config.legal_document_text) sections.push({
+    id: "kf-agreement", title: smartCase(config.legal_document_title || "Agreement"),
+    req: [config.requires_acknowledgment ? acknowledgmentChecked : null, config.requires_signature_canvas ? signatureDrawn : null].filter((x) => x !== null),
+  });
+  if (config.include_clothing) sections.push({ id: "kf-sizing", title: "Sizing", req: [] });
+  if (config.include_shipping) sections.push({ id: "kf-shipping", title: "Shipping", req: [] });
+  sections.push({ id: "kf-updates", title: "Updates", req: [] });
+  const totalReq = sections.reduce((n, s) => n + s.req.length, 0);
+  const doneReq = sections.reduce((n, s) => n + s.req.filter(Boolean).length, 0);
+  const pct = totalReq ? Math.round((doneReq / totalReq) * 100) : 100;
+  const sectionNo = (id) => sections.findIndex((s) => s.id === id) + 1;
 
-        {config.legal_document_text && (
-          <Section title={config.legal_document_title || "Agreement"} accent={accent}>
-            <div
-              onScroll={(e) => {
-                const el = e.currentTarget;
-                if (el.scrollTop + el.clientHeight >= el.scrollHeight - 20) setScrolledToBottom(true);
-              }}
-              style={styles.legalBox}
-            >
-              {config.legal_document_text}
+  return (
+    <Shell tokens={tokens}>
+      <Band brand={heading.brand} title={heading.title} meta={heading.meta} lede={lede} notes={notes} />
+
+      <div className="kf-sheet">
+        <aside className="kf-rail" aria-label="Form progress">
+          <div className="kf-progress" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-label="Required answers completed">
+            <div className="kf-progress-text">
+              <strong>{doneReq}</strong> of {totalReq} required
             </div>
-            {config.requires_acknowledgment && (
-              <label style={styles.checkboxRow}>
-                <input type="checkbox" checked={acknowledgmentChecked} onChange={(e) => setAcknowledgmentChecked(e.target.checked)} />
-                <span>I have read and agree to this agreement.</span>
-              </label>
+            <div className="kf-progress-track"><div className="kf-progress-fill" style={{ width: `${pct}%` }} /></div>
+          </div>
+          <ol className="kf-rail-list">
+            {sections.map((s, i) => {
+              const state = !s.req.length ? "optional" : s.req.every(Boolean) ? "done" : "todo";
+              return (
+                <li key={s.id}>
+                  <a href={`#${s.id}`} className="kf-rail-link" data-state={state}>
+                    <span className="kf-rail-num">{state === "done" ? "✓" : i + 1}</span>
+                    <span>{s.title}</span>
+                  </a>
+                </li>
+              );
+            })}
+          </ol>
+        </aside>
+
+        <form onSubmit={handleSubmit} noValidate className="kf-form">
+          <Section id="kf-contact" n={sectionNo("kf-contact")} title="Contact" hint="Where we'll reach you about this.">
+            <div className="kf-grid">
+              <CoreInput label="First name" name="first_name" autoComplete="given-name" value={form.first_name} onChange={update} required error={fieldErrors.first_name} />
+              <CoreInput label="Last name" name="last_name" autoComplete="family-name" value={form.last_name} onChange={update} required error={fieldErrors.last_name} />
+              <CoreInput label="Email" name="email" type="email" autoComplete="email" inputMode="email" value={form.email} onChange={update} required error={fieldErrors.email} />
+              <CoreInput label="Phone" name="phone" type="tel" autoComplete="tel" inputMode="tel" placeholder="(404) 555-0123" value={form.phone} onChange={update} required={isReq("phone")} error={fieldErrors.phone} />
+              <CoreSelect label="City / market" name="city" value={form.city} onChange={update} options={CITIES} required={isReq("city")} error={fieldErrors.city} />
+              <CoreInput label="Instagram" name="instagram_handle" placeholder="@handle" autoComplete="off" value={form.instagram_handle} onChange={update} required={isReq("instagram", "instagram_handle")} error={fieldErrors.instagram || fieldErrors.instagram_handle} />
+            </div>
+            {showMoreLinks || isReq("tiktok", "tiktok_handle", "website", "website_url") ? (
+              <div className="kf-grid">
+                <CoreInput label="TikTok" name="tiktok_handle" placeholder="@handle" autoComplete="off" value={form.tiktok_handle} onChange={update} required={isReq("tiktok", "tiktok_handle")} error={fieldErrors.tiktok || fieldErrors.tiktok_handle} />
+                <CoreInput label="Website" name="website_url" type="url" inputMode="url" placeholder="https://" value={form.website_url} onChange={update} required={isReq("website", "website_url")} error={fieldErrors.website || fieldErrors.website_url} />
+              </div>
+            ) : (
+              <button type="button" className="kf-reveal" onClick={() => setShowMoreLinks(true)}>
+                + Add TikTok or a website
+              </button>
             )}
-            {fieldErrors.acknowledgment && <div style={styles.fieldError}>{fieldErrors.acknowledgment}</div>}
-            {config.requires_signature_canvas && (
-              <div style={{ marginTop: 18 }}>
-                <div style={styles.label}>DRAW SIGNATURE *</div>
-                <canvas ref={setupCanvas} width={900} height={200} style={{ ...styles.canvas, borderColor: accent }} />
-                <button type="button" onClick={clearSignature} style={{ ...styles.textButton, color: accent }}>CLEAR SIGNATURE</button>
-                {fieldErrors.signature && <div style={styles.fieldError}>{fieldErrors.signature}</div>}
+          </Section>
+
+          {customFields.length > 0 && (
+            <Section id="kf-details" n={sectionNo("kf-details")} title={detailsTitle(config)}>
+              <div className="kf-grid">
+              {pairFields(customFields).map(({ field, wide }) => (
+                <DynamicField
+                  key={field.key}
+                  wide={wide}
+                  field={field}
+                  value={form.role_data[field.key]}
+                  file={files[field.key]}
+                  onChange={(value) => updateRole(field.key, value)}
+                  onToggle={(option) => toggleMulti(field.key, option)}
+                  onFile={(file) => { setFiles((prev) => ({ ...prev, [field.key]: file })); clearError(field.key); }}
+                  error={fieldErrors[field.key]}
+                />
+              ))}
+              </div>
+            </Section>
+          )}
+
+          {config.legal_document_text && (
+            <Section id="kf-agreement" n={sectionNo("kf-agreement")} title={smartCase(config.legal_document_title || "Agreement")} hint="Scroll through the full text before you sign.">
+              <div
+                tabIndex={0}
+                aria-label="Agreement text"
+                onScroll={(e) => {
+                  const el = e.currentTarget;
+                  if (el.scrollTop + el.clientHeight >= el.scrollHeight - 20) setScrolledToBottom(true);
+                }}
+                className="kf-legal"
+              >
+                {config.legal_document_text}
+              </div>
+              {config.requires_acknowledgment && (
+                <div className="kf-field" data-invalid={Boolean(fieldErrors.acknowledgment) || undefined}>
+                  <label className="kf-check">
+                    <input type="checkbox" checked={acknowledgmentChecked} onChange={(e) => { setAcknowledgmentChecked(e.target.checked); clearError("acknowledgment"); }} />
+                    <span className="kf-check-box" aria-hidden="true" />
+                    <span>I have read and agree to this agreement.</span>
+                  </label>
+                  {fieldErrors.acknowledgment && <div className="kf-error" role="alert">{fieldErrors.acknowledgment}</div>}
+                </div>
+              )}
+              {config.requires_signature_canvas && (
+                <div className="kf-field" data-invalid={Boolean(fieldErrors.signature) || undefined}>
+                  <div className="kf-label">Signature<span className="kf-req" aria-hidden="true">*</span></div>
+                  <div className="kf-sign">
+                    <canvas ref={setupCanvas} width={900} height={220} className="kf-canvas" aria-label="Signature pad: draw with your finger or mouse" />
+                    {!signatureDrawn && <span className="kf-sign-hint" aria-hidden="true">Sign here</span>}
+                  </div>
+                  <button type="button" onClick={clearSignature} className="kf-text-button">Clear signature</button>
+                  {fieldErrors.signature && <div className="kf-error" role="alert">{fieldErrors.signature}</div>}
+                </div>
+              )}
+            </Section>
+          )}
+
+          {config.include_clothing && (
+            <Section id="kf-sizing" n={sectionNo("kf-sizing")} title="Sizing">
+              <div className="kf-grid">
+                <CoreSelect label="Shirt size" name="shirt_size" value={form.shirt_size} onChange={update} options={SIZES} />
+                <CoreInput label="Shoe size" name="shoe_size" value={form.shoe_size} onChange={update} />
+                <CoreInput label="Pants / waist size" name="pants_size" value={form.pants_size} onChange={update} />
+                <CoreSelect label="Preferred style" name="preferred_style" value={form.preferred_style} onChange={update} options={["Streetwear", "Casual", "Formal", "Athletic", "Luxury"]} />
+              </div>
+            </Section>
+          )}
+
+          {config.include_shipping && (
+            <Section id="kf-shipping" n={sectionNo("kf-shipping")} title="Shipping address">
+              <ShippingField label="Address line 1" name="line1" autoComplete="address-line1" value={form.shipping_address.line1} onChange={updateShipping} />
+              <ShippingField label="Address line 2" name="line2" autoComplete="address-line2" value={form.shipping_address.line2} onChange={updateShipping} />
+              <div className="kf-grid kf-grid--3">
+                <ShippingField label="City" name="city" autoComplete="address-level2" value={form.shipping_address.city} onChange={updateShipping} />
+                <ShippingField label="State" name="state" autoComplete="address-level1" value={form.shipping_address.state} onChange={updateShipping} />
+                <ShippingField label="ZIP code" name="zip" autoComplete="postal-code" inputMode="numeric" value={form.shipping_address.zip} onChange={updateShipping} />
+              </div>
+            </Section>
+          )}
+
+          <Section id="kf-updates" n={sectionNo("kf-updates")} title="Updates" hint="Optional. Choose how we keep you posted.">
+            <label className="kf-check">
+              <input type="checkbox" checked={smsConsent} onChange={(e) => setSmsConsent(e.target.checked)} />
+              <span className="kf-check-box" aria-hidden="true" />
+              <span>Text me updates about this submission. Message and data rates may apply.</span>
+            </label>
+            <label className="kf-check">
+              <input type="checkbox" checked={marketingConsent} onChange={(e) => setMarketingConsent(e.target.checked)} />
+              <span className="kf-check-box" aria-hidden="true" />
+              <span>Email me occasional brand news, opportunities and offers.</span>
+            </label>
+          </Section>
+
+          <div aria-hidden="true" style={{ position: "absolute", left: "-10000px", width: 1, height: 1, overflow: "hidden" }}>
+            <label>Company Website<input tabIndex={-1} autoComplete="off" value={honeypot} onChange={(e) => setHoneypot(e.target.value)} /></label>
+          </div>
+
+          <div className="kf-finish">
+            {error && (
+              <div className="kf-banner" role="alert">
+                {error}
+                {error === REQUIRED_MESSAGE && Object.keys(fieldErrors).length > 0 && (
+                  <span> {Object.keys(fieldErrors).length === 1 ? "One field is" : `${Object.keys(fieldErrors).length} fields are`} highlighted above.</span>
+                )}
               </div>
             )}
-          </Section>
-        )}
-
-        {customFields.length > 0 && (
-          <Section title={`${pretty(roleType)} Details`} accent={accent}>
-            {customFields.map((field) => (
-              <DynamicField
-                key={field.key}
-                field={field}
-                value={form.role_data[field.key]}
-                file={files[field.key]}
-                onChange={(value) => updateRole(field.key, value)}
-                onToggle={(option) => toggleMulti(field.key, option)}
-                onFile={(file) => setFiles((prev) => ({ ...prev, [field.key]: file }))}
-                error={fieldErrors[field.key]}
-                accent={accent}
-              />
-            ))}
-          </Section>
-        )}
-
-        {config.include_clothing && (
-          <Section title="Sizing" accent={accent}>
-            <div style={styles.twoCol}>
-              <CoreSelect label="Shirt Size" name="shirt_size" value={form.shirt_size} onChange={update} options={SIZES} />
-              <CoreInput label="Shoe Size" name="shoe_size" value={form.shoe_size} onChange={update} />
-            </div>
-            <div style={styles.twoCol}>
-              <CoreInput label="Pants / Waist Size" name="pants_size" value={form.pants_size} onChange={update} />
-              <CoreSelect label="Preferred Style" name="preferred_style" value={form.preferred_style} onChange={update} options={["Streetwear", "Casual", "Formal", "Athletic", "Luxury"]} />
-            </div>
-          </Section>
-        )}
-
-        {config.include_shipping && (
-          <Section title="Shipping Address" accent={accent}>
-            <ShippingField label="Address Line 1" name="line1" value={form.shipping_address.line1} onChange={updateShipping} />
-            <ShippingField label="Address Line 2" name="line2" value={form.shipping_address.line2} onChange={updateShipping} />
-            <div style={styles.twoCol}>
-              <ShippingField label="City" name="city" value={form.shipping_address.city} onChange={updateShipping} />
-              <ShippingField label="State" name="state" value={form.shipping_address.state} onChange={updateShipping} />
-            </div>
-            <ShippingField label="ZIP Code" name="zip" value={form.shipping_address.zip} onChange={updateShipping} />
-          </Section>
-        )}
-
-        <Section title="Contact Preferences" accent={accent}>
-          <label style={styles.checkboxRow}>
-            <input type="checkbox" checked={smsConsent} onChange={(e) => setSmsConsent(e.target.checked)} />
-            <span>You may text me updates specifically about this submission. Message/data rates may apply.</span>
-          </label>
-          <label style={styles.checkboxRow}>
-            <input type="checkbox" checked={marketingConsent} onChange={(e) => setMarketingConsent(e.target.checked)} />
-            <span>I also want occasional brand news, opportunities, or offers by email.</span>
-          </label>
-        </Section>
-
-        <div aria-hidden="true" style={{ position: "absolute", left: "-10000px", width: 1, height: 1, overflow: "hidden" }}>
-          <label>Company Website<input tabIndex={-1} autoComplete="off" value={honeypot} onChange={(e) => setHoneypot(e.target.value)} /></label>
-        </div>
-
-        <button type="submit" disabled={submitting} style={{ ...styles.button, background: accent, opacity: submitting ? 0.62 : 1 }}>
-          {submitting ? "SUBMITTING…" : (config.submit_label || "SUBMIT")}
-        </button>
-        <div style={styles.privacy}>Submitted information is recorded for this brand and application type. Messages depend on the contact preferences you select.</div>
-      </form>
+            <button type="submit" disabled={submitting} className="kf-submit">
+              {submitting ? "Sending…" : smartCase(config.submit_label || "Submit")}
+            </button>
+            <p className="kf-fineprint">Your answers go only to {heading.brand || "this brand"} for this {String(config.form_kind || "application").replace(/_/g, " ")}. We contact you based on the preferences above.</p>
+          </div>
+        </form>
+      </div>
     </Shell>
   );
 }
 
-function DynamicField({ field, value, file, onChange, onToggle, onFile, error, accent }) {
+// ---------- fields ----------
+// Short inputs sit two-up; a short input with no short neighbour takes the full row,
+// so DOM order (and keyboard order) always matches visual order.
+function isShortField(field) {
+  const type = field.type || "text";
+  const options = Array.isArray(field.options) ? field.options : [];
+  const shortType = ["text", "number", "email", "tel", "date"].includes(type) || (type === "select" && options.length > PILL_MAX_OPTIONS);
+  return shortType && String(field.label || "").length <= 46 && !field.help;
+}
+function pairFields(fields) {
+  const out = fields.map((field) => ({ field, wide: true }));
+  for (let i = 0; i < out.length - 1; i++) {
+    if (isShortField(out[i].field) && isShortField(out[i + 1].field)) {
+      out[i].wide = false;
+      out[i + 1].wide = false;
+      i++;
+    }
+  }
+  return out;
+}
+
+function DynamicField(props) {
+  return <div className={props.wide ? "kf-span" : undefined}><DynamicFieldInner {...props} /></div>;
+}
+
+function DynamicFieldInner({ field, value, file, onChange, onToggle, onFile, error }) {
   const required = Boolean(field.required);
   const type = field.type || "text";
   const options = Array.isArray(field.options) ? field.options : [];
+
   if (type === "textarea") return (
-    <FieldWrap label={field.label} required={required} error={error}>
-      <textarea value={value || ""} onChange={(e) => onChange(e.target.value)} placeholder={field.placeholder || ""} style={styles.textarea} />
+    <FieldWrap label={field.label} required={required} error={error} help={field.help}>
+      <textarea value={value || ""} onChange={(e) => onChange(e.target.value)} placeholder={field.placeholder || ""} className="kf-input kf-textarea" rows={4} />
     </FieldWrap>
   );
+
+  if (type === "select" && options.length > 0 && options.length <= PILL_MAX_OPTIONS) return (
+    <FieldWrap label={field.label} required={required} error={error} help={field.help} group>
+      <div className="kf-pills" role="radiogroup" aria-label={field.label}>
+        {options.map((option) => {
+          const active = value === option;
+          return (
+            <button type="button" key={option} role="radio" aria-checked={active} className="kf-pill" data-active={active || undefined}
+              onClick={() => onChange(active && !required ? "" : option)}>
+              {option}
+            </button>
+          );
+        })}
+      </div>
+    </FieldWrap>
+  );
+
   if (type === "select") return (
-    <FieldWrap label={field.label} required={required} error={error}>
-      <select value={value || ""} onChange={(e) => onChange(e.target.value)} style={styles.input}>
-        <option value="">Select…</option>
+    <FieldWrap label={field.label} required={required} error={error} help={field.help}>
+      <select value={value || ""} onChange={(e) => onChange(e.target.value)} className="kf-input kf-select">
+        <option value="">Choose one</option>
         {options.map((option) => <option value={option} key={option}>{option}</option>)}
       </select>
     </FieldWrap>
   );
+
   if (type === "multi") {
     const selected = Array.isArray(value) ? value : [];
     return (
-      <FieldWrap label={field.label} required={required} error={error}>
-        <div style={styles.chipWrap}>
+      <FieldWrap label={field.label} required={required} error={error} help={field.help || "Choose all that apply."} group>
+        <div className="kf-pills">
           {options.map((option) => {
             const active = selected.includes(option);
-            return <button type="button" key={option} onClick={() => onToggle(option)} style={{ ...styles.chip, borderColor: active ? accent : "#D8D4CC", color: active ? accent : "#555", background: active ? `${accent}12` : "#F8F7F4" }}>{option}</button>;
+            return (
+              <button type="button" key={option} aria-pressed={active} className="kf-pill kf-pill--multi" data-active={active || undefined} onClick={() => onToggle(option)}>
+                <span className="kf-pill-tick" aria-hidden="true">{active ? "✓" : "+"}</span>{option}
+              </button>
+            );
           })}
         </div>
       </FieldWrap>
     );
   }
+
   if (type === "checkbox") return (
-    <div style={styles.field}>
-      <label style={styles.checkboxRow}>
-        <input type="checkbox" checked={value === true} onChange={(e) => onChange(e.target.checked)} />
-        <span>{field.label}{required ? " *" : ""}</span>
+    <div className="kf-field" data-invalid={Boolean(error) || undefined}>
+      <label className="kf-check kf-check--card">
+        <input type="checkbox" checked={value === true} onChange={(e) => onChange(e.target.checked)} aria-invalid={Boolean(error)} />
+        <span className="kf-check-box" aria-hidden="true" />
+        <span>{field.label}{required && <span className="kf-req" aria-hidden="true">*</span>}</span>
       </label>
-      {error && <div style={styles.fieldError}>{error}</div>}
+      {error && <div className="kf-error" role="alert">{error}</div>}
     </div>
   );
+
   if (type === "file") return (
-    <FieldWrap label={field.label} required={required} error={error}>
-      <label style={{ ...styles.fileBox, borderColor: file ? accent : "#D8D4CC" }}>
+    <FieldWrap label={field.label} required={required} error={error} help={field.help} group>
+      <label className="kf-file" data-has-file={Boolean(file) || undefined}>
         <input
           type="file"
           accept=".pdf,.jpg,.jpeg,.png,.webp,.docx,application/pdf,image/jpeg,image/png,image/webp,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           onChange={(e) => onFile(e.target.files?.[0] || null)}
-          style={{ display: "none" }}
+          className="kf-file-input"
         />
-        <span>{file ? `✓ ${file.name}` : "Choose PDF, JPG, PNG, WebP or DOCX — max 10 MB"}</span>
+        <span className="kf-file-main">{file ? `✓ ${file.name}` : "Choose a file"}</span>
+        <span className="kf-file-sub">{file ? "Tap to replace" : "PDF, JPG, PNG, WebP or DOCX, up to 10 MB"}</span>
       </label>
     </FieldWrap>
   );
+
+  const htmlType = ["email", "tel", "url", "number", "date"].includes(type) ? type : "text";
+  const inputMode = { email: "email", tel: "tel", url: "url", number: "numeric" }[type];
   return (
-    <FieldWrap label={field.label} required={required} error={error}>
+    <FieldWrap label={field.label} required={required} error={error} help={field.help}>
       <input
-        type={["email", "tel", "url", "number", "date"].includes(type) ? type : "text"}
+        type={htmlType}
+        inputMode={inputMode}
+        min={htmlType === "number" ? 0 : undefined}
         value={value ?? ""}
         onChange={(e) => onChange(e.target.value)}
-        placeholder={field.placeholder || ""}
-        style={styles.input}
+        placeholder={field.placeholder || (type === "url" ? "https://" : "")}
+        className="kf-input"
       />
     </FieldWrap>
   );
 }
 
-function CoreInput({ label, name, value, onChange, type = "text", required, error }) {
-  return <FieldWrap label={label} required={required} error={error}><input type={type} value={value || ""} onChange={(e) => onChange(name, e.target.value)} style={styles.input} /></FieldWrap>;
+function CoreInput({ label, name, value, onChange, type = "text", required, error, ...rest }) {
+  return <FieldWrap label={label} required={required} error={error}><input type={type} value={value || ""} onChange={(e) => onChange(name, e.target.value)} className="kf-input" {...rest} /></FieldWrap>;
 }
 function CoreSelect({ label, name, value, onChange, options, required, error }) {
-  return <FieldWrap label={label} required={required} error={error}><select value={value || ""} onChange={(e) => onChange(name, e.target.value)} style={styles.input}><option value="">Select…</option>{options.map((o) => <option key={o} value={o}>{o}</option>)}</select></FieldWrap>;
+  return <FieldWrap label={label} required={required} error={error}><select value={value || ""} onChange={(e) => onChange(name, e.target.value)} className="kf-input kf-select"><option value="">Choose one</option>{options.map((o) => <option key={o} value={o}>{o}</option>)}</select></FieldWrap>;
 }
-function ShippingField({ label, name, value, onChange }) {
-  return <FieldWrap label={label}><input value={value || ""} onChange={(e) => onChange(name, e.target.value)} style={styles.input} /></FieldWrap>;
+function ShippingField({ label, name, value, onChange, ...rest }) {
+  return <FieldWrap label={label}><input value={value || ""} onChange={(e) => onChange(name, e.target.value)} className="kf-input" {...rest} /></FieldWrap>;
 }
-function FieldWrap({ label, required, error, children }) {
+function FieldWrap({ label, required, error, help, group, children }) {
   const id = useId();
-  const nativeControl = isValidElement(children) && typeof children.type === "string" &&
+  const nativeControl = !group && isValidElement(children) && typeof children.type === "string" &&
     ["input", "select", "textarea"].includes(children.type);
-  return <div style={styles.field}>
-    {nativeControl
-      ? <label htmlFor={id} style={styles.label}>{label}{required ? " *" : ""}</label>
-      : <div style={styles.label}>{label}{required ? " *" : ""}</div>}
-    {nativeControl
-      ? cloneElement(children, { id, "aria-invalid": Boolean(error), "aria-describedby": error ? id + "-error" : undefined })
-      : children}
-    {error && <div id={id + "-error"} role="alert" style={styles.fieldError}>{error}</div>}
-  </div>;
-}
-
-function Section({ title, accent, children }) {
-  return <div style={styles.card}><div style={{ ...styles.eyebrow, color: accent }}>{title}</div>{children}</div>;
-}
-function Header({ config, accent }) {
+  const describedBy = [help ? id + "-help" : null, error ? id + "-error" : null].filter(Boolean).join(" ") || undefined;
+  const labelBody = <>{label}{required && <span className="kf-req" aria-hidden="true">*</span>}</>;
   return (
-    <div style={styles.header}>
-      {config.logo_url && <div style={styles.logoBox}><img src={config.logo_url} alt="" style={styles.logo} /></div>}
-      <div style={{ ...styles.brandMark, color: accent }}>{pretty(config.brand_key)}</div>
-      <h1 style={styles.title}>{config.form_title || pretty(config.role_type)}</h1>
-      {config.form_subtitle && <p style={styles.subtitle}>{config.form_subtitle}</p>}
+    <div className="kf-field" data-invalid={Boolean(error) || undefined} role={group ? "group" : undefined} aria-labelledby={group ? id + "-label" : undefined}>
+      {nativeControl
+        ? <label htmlFor={id} className="kf-label">{labelBody}</label>
+        : <div id={id + "-label"} className="kf-label">{labelBody}</div>}
+      {help && <div id={id + "-help"} className="kf-help">{help}</div>}
+      {nativeControl
+        ? cloneElement(children, { id, required: Boolean(required), "aria-required": Boolean(required) || undefined, "aria-invalid": Boolean(error), "aria-describedby": describedBy })
+        : children}
+      {error && <div id={id + "-error"} role="alert" className="kf-error">{error}</div>}
     </div>
   );
 }
-function Shell({ children }) {
-  return <main data-khg-form="true" style={styles.page}><div style={styles.shell}>{children}<footer style={styles.footer}>THE KOLLECTIVE HOSPITALITY GROUP</footer></div></main>;
+
+// ---------- layout ----------
+function Section({ id, n, title, hint, children }) {
+  return (
+    <section id={id} className="kf-section" aria-labelledby={id + "-h"}>
+      <header className="kf-section-head">
+        <span className="kf-section-num" aria-hidden="true">{n}</span>
+        <div>
+          <h2 id={id + "-h"} className="kf-section-title">{title}</h2>
+          {hint && <p className="kf-section-hint">{hint}</p>}
+        </div>
+      </header>
+      {children}
+    </section>
+  );
 }
-function Message({ title, body }) {
-  return <div style={{ ...styles.card, textAlign: "center", marginTop: 90 }}><h1 style={styles.successTitle}>{title}</h1><p style={styles.successBody}>{body}</p></div>;
+
+function Band({ brand, title, meta, lede, notes = [], compact }) {
+  return (
+    <header className="kf-band" data-compact={compact || undefined}>
+      <div className="kf-band-inner">
+        {brand && <div className="kf-band-brand">{brand}</div>}
+        <h1 className="kf-band-title">{title}</h1>
+        {meta && <div className="kf-band-meta">{meta}</div>}
+        {lede && <p className="kf-band-lede">{lede}</p>}
+        {notes.length > 0 && (
+          <ul className="kf-band-notes">
+            {notes.map((note) => <li key={note}>{note}</li>)}
+          </ul>
+        )}
+      </div>
+    </header>
+  );
 }
+
+function Shell({ tokens, children }) {
+  return (
+    <main data-khg-form="true" className="kf-page" style={tokens}>
+      {children}
+      <footer className="kf-footer">The Kollective Hospitality Group</footer>
+    </main>
+  );
+}
+
+function LoadingShell() {
+  return (
+    <main data-khg-form="true" className="kf-page" style={brandTokens("#2B3A55")} aria-busy="true">
+      <header className="kf-band kf-band--loading">
+        <div className="kf-band-inner">
+          <div className="kf-skel kf-skel--brand" />
+          <div className="kf-skel kf-skel--title" />
+          <div className="kf-skel kf-skel--line" />
+        </div>
+      </header>
+      <div className="kf-sheet kf-sheet--narrow">
+        <span className="kf-visually-hidden">Loading form</span>
+        {[0, 1, 2, 3].map((i) => <div key={i} className="kf-skel kf-skel--field" />)}
+      </div>
+    </main>
+  );
+}
+
 function humanError(code = "") {
   if (code.includes("FORM_NOT_FOUND") || code.includes("FORM_NOT_AVAILABLE")) return "This form is not currently available.";
   if (code.includes("FORM_CLOSED")) return "This form has closed.";
   if (code.includes("FORM_CAPACITY_REACHED")) return "This form has reached capacity.";
-  if (code.includes("RECENT_DUPLICATE")) return "We just received a matching submission. Please wait before submitting again.";
-  if (code.includes("FILE_SIZE_INVALID") || code.includes("PAYLOAD_TOO_LARGE")) return "One of the uploaded files is too large.";
-  if (code.includes("FILE_TYPE_NOT_ALLOWED")) return "That file type is not supported.";
-  if (code.includes("UPLOAD_FAILED")) return "A file could not be uploaded. Please retry.";
+  if (code.includes("RECENT_DUPLICATE")) return "We just received a matching submission. Wait a few minutes before sending again.";
+  if (code.includes("FILE_SIZE_INVALID") || code.includes("PAYLOAD_TOO_LARGE")) return "One of the files is over 10 MB. Choose a smaller file.";
+  if (code.includes("FILE_TYPE_NOT_ALLOWED")) return "That file type isn't supported. Use PDF, JPG, PNG, WebP or DOCX.";
+  if (code.includes("UPLOAD_FAILED")) return "A file didn't upload. Check your connection and send again.";
   if (code.startsWith("MAX_")) return "Too many files were selected.";
-  return "We could not submit the form. Please review the information and try again.";
+  return "Your answers didn't send. Check your connection and try again — nothing you entered was lost.";
 }
-
-const styles = {
-  page: { minHeight: "100vh", background: "#F4F1EA", color: "#171717", fontFamily: "'DM Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif", padding: "28px 14px 70px" },
-  shell: { width: "100%", maxWidth: 780, margin: "0 auto" },
-  loading: { padding: "120px 20px", textAlign: "center", letterSpacing: 3, fontSize: 12, color: "#777" },
-  header: { textAlign: "center", padding: "24px 16px 28px" },
-  logoBox: { display: "inline-flex", background: "#111", borderRadius: 16, padding: 12, marginBottom: 14 },
-  logo: { height: 52, maxWidth: 180, objectFit: "contain", display: "block" },
-  brandMark: { fontSize: 10, fontWeight: 800, letterSpacing: 3.2, textTransform: "uppercase", marginBottom: 10 },
-  title: { fontSize: "clamp(28px, 6vw, 45px)", lineHeight: 1.02, letterSpacing: -1.5, margin: 0, fontWeight: 900 },
-  subtitle: { margin: "14px auto 0", color: "#666", fontSize: 15, lineHeight: 1.7, maxWidth: 600 },
-  card: { background: "#FFF", border: "1px solid #E3DED3", borderRadius: 20, padding: "26px 24px", marginBottom: 16, boxShadow: "0 8px 28px rgba(40,30,12,0.045)" },
-  eyebrow: { fontSize: 11, fontWeight: 850, letterSpacing: 2.1, textTransform: "uppercase", marginBottom: 18 },
-  cardTitle: { fontSize: 24, lineHeight: 1.15, margin: "0 0 14px", fontWeight: 850 },
-  bodyText: { fontSize: 14, color: "#4E4E4E", lineHeight: 1.7, whiteSpace: "pre-line" },
-  twoCol: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "0 12px" },
-  field: { marginBottom: 16 },
-  label: { display: "block", marginBottom: 7, fontSize: 11, fontWeight: 800, letterSpacing: 1.25, color: "#575757", textTransform: "uppercase" },
-  input: { width: "100%", boxSizing: "border-box", border: "1px solid #D8D4CC", background: "#FCFBF8", color: "#171717", borderRadius: 10, padding: "14px 14px", fontSize: 16, outline: "none", fontFamily: "inherit" },
-  textarea: { width: "100%", minHeight: 108, resize: "vertical", boxSizing: "border-box", border: "1px solid #D8D4CC", background: "#FCFBF8", color: "#171717", borderRadius: 10, padding: "14px 14px", fontSize: 16, outline: "none", fontFamily: "inherit", lineHeight: 1.55 },
-  fieldError: { marginTop: 5, fontSize: 11, fontWeight: 700, color: "#B42318" },
-  errorBanner: { background: "#FFF0EE", border: "1px solid #F5B7AF", color: "#8D2117", borderRadius: 12, padding: "12px 14px", fontSize: 13, fontWeight: 700, marginBottom: 16 },
-  chipWrap: { display: "flex", flexWrap: "wrap", gap: 8 },
-  chip: { border: "1px solid", borderRadius: 999, padding: "8px 12px", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" },
-  checkboxRow: { display: "flex", alignItems: "flex-start", gap: 10, fontSize: 13, color: "#414141", lineHeight: 1.55, cursor: "pointer", marginBottom: 12 },
-  fileBox: { display: "block", border: "1.5px dashed", background: "#FBFAF7", borderRadius: 11, padding: "16px 14px", fontSize: 12, color: "#555", cursor: "pointer" },
-  button: { width: "100%", border: 0, borderRadius: 13, padding: "17px 20px", color: "white", fontSize: 15, fontWeight: 900, letterSpacing: 1.7, textTransform: "uppercase", cursor: "pointer", fontFamily: "inherit", boxShadow: "0 8px 22px rgba(0,0,0,0.12)" },
-  textButton: { border: 0, background: "transparent", padding: "8px 0", fontSize: 10, fontWeight: 900, letterSpacing: 1.4, cursor: "pointer" },
-  actionLink: { display: "inline-block", marginTop: 20, color: "white", textDecoration: "none", borderRadius: 10, padding: "12px 16px", fontSize: 11, fontWeight: 900, letterSpacing: 1.4 },
-  privacy: { textAlign: "center", color: "#777", fontSize: 12, lineHeight: 1.6, padding: "12px 18px 0" },
-  footer: { textAlign: "center", color: "#948D80", fontSize: 9, letterSpacing: 3, fontWeight: 800, padding: "34px 0 0" },
-  legalBox: { maxHeight: 350, overflowY: "auto", whiteSpace: "pre-wrap", padding: 16, border: "1px solid #DEDAD1", borderRadius: 10, background: "#FBFAF7", fontFamily: "Georgia, serif", fontSize: 13, lineHeight: 1.65, color: "#333", marginBottom: 16 },
-  canvas: { width: "100%", height: 150, background: "#FFF", border: "1.5px dashed", borderRadius: 10, touchAction: "none" },
-  successTitle: { fontSize: 28, lineHeight: 1.08, margin: "0 0 12px", fontWeight: 900 },
-  successBody: { maxWidth: 520, margin: "0 auto", color: "#666", lineHeight: 1.7, fontSize: 14 },
-  reference: { display: "inline-block", marginTop: 22, padding: "8px 12px", borderRadius: 8, background: "#F4F1EA", fontSize: 10, fontWeight: 900, letterSpacing: 1.5, color: "#575044" },
-};
