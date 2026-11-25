@@ -37,7 +37,7 @@ create policy "team_onboarding_entities service all" on public.team_onboarding_e
 -- The top 15 entities teammates can pick (Nov 25 ask). Every name spelled out.
 insert into public.team_onboarding_entities(slug, display_name, work_email_domain, mail_ready, sort_order, notes) values
  ('dorsey','Dr. Dorsey and The Kollective Hospitality Group','thekollectivehospitality.com',false,10,'Google Workspace; seats needed for real mailboxes'),
- ('sos','S.O.S. (Superheroes on Standby)','superherosonstandby.com',true,20,'Hostinger'),
+ ('sos','S.O.S. (Superheros On Standby)','superherosonstandby.com',true,20,'Hostinger'),
  ('good-times','Good Times','thegoodtimesworldwide.com',true,30,'Hostinger'),
  ('atf','American Track and Field','americantnf.com',true,40,'Google Workspace'),
  ('sole-exchange','Sole Exchange',null,false,50,'No mail domain yet'),
