@@ -4,19 +4,27 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { renderNda, sha256Hex } from '../lib/ndaRender';
 
 const ENDPOINT = 'https://dzlmtvodpyhetvektfuo.supabase.co/functions/v1/team-onboarding';
-const STEPS = ['About you', 'Your role', 'Emergency contact', 'Sign the agreement'];
+const STEPS = ['About you', 'Entities and role', 'Sizes and interests', 'Emergency contact', 'Sign the agreement'];
+const LAST = STEPS.length - 1;
 const REACH = [
   ['text', 'Text'],
   ['call', 'Phone call'],
   ['email', 'Email'],
   ['any', 'Any of these'],
 ];
-const SIZES = ['', 'XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'];
+const SIZES = ['', 'XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'];
+const SHOES = ['', ...Array.from({ length: 23 }, (_, i) => String(5 + i / 2))];
+const INTERESTS = [
+  'Events and nightlife', 'Sports and fitness', 'Fashion and clothing', 'Music', 'Food and drink',
+  'Technology and apps', 'Social media and content', 'Photography and video', 'Sales and outreach',
+  'Community and nonprofit work', 'Business and investing', 'Travel',
+];
 
 const blank = {
   full_name: '', preferred_name: '', phone: '', personal_email: '',
   street: '', city: '', state: '', zip: '',
-  entity_slug: '', role_title: '', duties: '', start_date: '', work_email_local_part: '', shirt_size: '',
+  entity_slug: '', involved_entities: [], role_title: '', duties: '', start_date: '', work_email_local_part: '',
+  shirt_size: '', hoodie_size: '', pants_size: '', shoe_size: '', shoe_kind: "Men's", interests: [], interests_notes: '',
   emergency_contact_name: '', emergency_contact_relationship: '', emergency_contact_phone: '',
   preferred_contact_method: 'text', best_time_to_reach: '',
   initials: '', typed_signature: '', electronic_consent: false, website: '',
@@ -141,7 +149,7 @@ function Field({ label, hint, error, children, wide }) {
 export default function TeamOnboardingForm({ initialEntity = '', previewKey = '' }) {
   const [config, setConfig] = useState(null);
   const [loadError, setLoadError] = useState('');
-  const [form, setForm] = useState({ ...blank, entity_slug: initialEntity });
+  const [form, setForm] = useState({ ...blank, entity_slug: initialEntity, involved_entities: initialEntity ? [initialEntity] : [] });
   const [localTouched, setLocalTouched] = useState(false);
   const [step, setStep] = useState(0);
   const [errors, setErrors] = useState({});
@@ -166,7 +174,7 @@ export default function TeamOnboardingForm({ initialEntity = '', previewKey = ''
         if (!data?.ok) throw new Error('config');
         setConfig(data);
         if (initialEntity && !data.entities.some((e) => e.slug === initialEntity)) {
-          setForm((f) => ({ ...f, entity_slug: '' }));
+          setForm((f) => ({ ...f, entity_slug: '', involved_entities: [] }));
         }
       })
       .catch(() => setLoadError('This page could not load. Check your connection and refresh.'));
@@ -190,6 +198,20 @@ export default function TeamOnboardingForm({ initialEntity = '', previewKey = ''
     setErrors((x) => ({ ...x, [key]: undefined }));
   };
 
+  const toggle = (key, value) => {
+    setForm((f) => {
+      const has = f[key].includes(value);
+      const list = has ? f[key].filter((v) => v !== value) : [...f[key], value];
+      const next = { ...f, [key]: list };
+      if (key === 'involved_entities') {
+        if (has && f.entity_slug === value) next.entity_slug = list[0] || '';
+        if (!has && !f.entity_slug) next.entity_slug = value;
+      }
+      return next;
+    });
+    setErrors((x) => ({ ...x, [key]: undefined, entity_slug: undefined }));
+  };
+
   const validate = (index) => {
     const e = {};
     if (index === 0) {
@@ -203,16 +225,20 @@ export default function TeamOnboardingForm({ initialEntity = '', previewKey = ''
       if (digits(form.zip).length < 5) e.zip = 'Enter your ZIP code.';
     }
     if (index === 1) {
-      if (!form.entity_slug) e.entity_slug = 'Choose the entity you work with.';
+      if (form.involved_entities.length === 0) e.involved_entities = 'Check at least one entity.';
+      if (!form.entity_slug) e.entity_slug = 'Pick your main entity.';
       if (squash(form.role_title).length < 2) e.role_title = 'Enter your role.';
       if (squash(form.duties).length < 10) e.duties = 'Describe what you will do in a sentence.';
       if (!/^[a-z][a-z0-9.]{0,30}$/.test(localPart)) e.work_email_local_part = 'Use lowercase letters, numbers and dots, starting with a letter.';
     }
     if (index === 2) {
+      if (!form.shirt_size) e.shirt_size = 'Choose your shirt size.';
+    }
+    if (index === 3) {
       if (squash(form.emergency_contact_name).length < 2) e.emergency_contact_name = 'Enter a name.';
       if (digits(form.emergency_contact_phone).length < 10) e.emergency_contact_phone = 'Enter a 10-digit phone number.';
     }
-    if (index === 3) {
+    if (index === 4) {
       if (!readToEnd) e.read = 'Scroll to the end of the agreement first.';
       if (!squash(form.initials)) e.initials = 'Enter your initials.';
       if (squash(form.typed_signature).toLowerCase() !== squash(form.full_name).toLowerCase()) e.typed_signature = `Type your full legal name exactly: ${squash(form.full_name)}`;
@@ -236,7 +262,7 @@ export default function TeamOnboardingForm({ initialEntity = '', previewKey = ''
   };
 
   const submit = async () => {
-    if (!validate(3) || status === 'submitting') return;
+    if (!validate(LAST) || status === 'submitting') return;
     setStatus('submitting');
     setServerError('');
     try {
@@ -253,6 +279,14 @@ export default function TeamOnboardingForm({ initialEntity = '', previewKey = ''
           personal_email: form.personal_email.trim().toLowerCase(),
           mailing_address: address,
           entity_slug: form.entity_slug,
+          involved_entities: form.involved_entities,
+          residence_city: squash(form.city),
+          residence_state: squash(form.state),
+          hoodie_size: form.hoodie_size,
+          pants_size: squash(form.pants_size),
+          shoe_size: form.shoe_size ? `${form.shoe_size} ${form.shoe_kind}` : '',
+          interests: form.interests,
+          interests_notes: squash(form.interests_notes),
           role_title: squash(form.role_title),
           duties: squash(form.duties),
           start_date: form.start_date || '',
@@ -296,7 +330,7 @@ export default function TeamOnboardingForm({ initialEntity = '', previewKey = ''
           <p className="tj-sub">
             {status === 'done'
               ? 'Your details and signed agreement are saved.'
-              : 'About five minutes. Your details, your role, then sign and date the team agreement.'}
+              : 'About seven minutes. Your details, the entities you want in on, your sizes, then sign and date the team agreement.'}
           </p>
           {previewKey && config?.nda?.status !== 'approved' ? <p className="tj-preview">Preview mode. This link is not open to the team yet.</p> : null}
         </div>
@@ -322,7 +356,7 @@ export default function TeamOnboardingForm({ initialEntity = '', previewKey = ''
         {closed ? <p className="tj-alert">This onboarding link isn’t open yet. Check back with Dr. Dorsey’s office.</p> : null}
 
         {config && !closed && status !== 'done' ? (
-          <form onSubmit={(e) => { e.preventDefault(); step < 3 ? go(step + 1) : submit(); }} noValidate>
+          <form onSubmit={(e) => { e.preventDefault(); step < LAST ? go(step + 1) : submit(); }} noValidate>
             <input className="tj-hp" tabIndex={-1} autoComplete="off" value={form.website} onChange={set('website')} aria-hidden="true" />
 
             {step === 0 ? (
@@ -340,14 +374,15 @@ export default function TeamOnboardingForm({ initialEntity = '', previewKey = ''
                 <Field label="Personal email" hint="We’ll send your signed copy here." error={errors.personal_email} wide>
                   <input value={form.personal_email} onChange={set('personal_email')} type="email" inputMode="email" autoComplete="email" />
                 </Field>
+                <h2 className="tj-h2 tj-wide">Where you live</h2>
                 <Field label="Street address" error={errors.street} wide>
                   <input value={form.street} onChange={set('street')} autoComplete="street-address" />
                 </Field>
-                <Field label="City" error={errors.city}>
+                <Field label="City you live in" error={errors.city}>
                   <input value={form.city} onChange={set('city')} autoComplete="address-level2" />
                 </Field>
                 <div className="tj-pair">
-                  <Field label="State" error={errors.state}>
+                  <Field label="State you live in" error={errors.state}>
                     <input value={form.state} onChange={set('state')} autoComplete="address-level1" maxLength={20} />
                   </Field>
                   <Field label="ZIP code" error={errors.zip}>
@@ -359,17 +394,33 @@ export default function TeamOnboardingForm({ initialEntity = '', previewKey = ''
 
             {step === 1 ? (
               <div className="tj-grid">
-                <h2 className="tj-h2 tj-wide">Your role</h2>
-                <Field label="Entity you work with" error={errors.entity_slug} wide>
-                  <div className="tj-chips" role="radiogroup">
-                    {config.entities.map((e) => (
-                      <button type="button" key={e.slug} role="radio" aria-checked={form.entity_slug === e.slug}
-                        className={`tj-chip${form.entity_slug === e.slug ? ' is-on' : ''}`} onClick={() => set('entity_slug')(e.slug)}>
-                        {e.display_name}
-                      </button>
-                    ))}
+                <h2 className="tj-h2 tj-wide">Which entities do you want to be involved with?</h2>
+                <Field label="Check every one you want in on" error={errors.involved_entities} wide>
+                  <div className="tj-boxes">
+                    {config.entities.map((e) => {
+                      const on = form.involved_entities.includes(e.slug);
+                      return (
+                        <label key={e.slug} className={`tj-box${on ? ' is-on' : ''}`}>
+                          <input type="checkbox" checked={on} onChange={() => toggle('involved_entities', e.slug)} />
+                          <span>{e.display_name}</span>
+                        </label>
+                      );
+                    })}
                   </div>
                 </Field>
+                {form.involved_entities.length > 1 ? (
+                  <Field label="Your main entity" hint="Your work email and agreement use this one." error={errors.entity_slug} wide>
+                    <div className="tj-chips" role="radiogroup">
+                      {config.entities.filter((e) => form.involved_entities.includes(e.slug)).map((e) => (
+                        <button type="button" key={e.slug} role="radio" aria-checked={form.entity_slug === e.slug}
+                          className={`tj-chip${form.entity_slug === e.slug ? ' is-on' : ''}`} onClick={() => set('entity_slug')(e.slug)}>
+                          {e.display_name}
+                        </button>
+                      ))}
+                    </div>
+                  </Field>
+                ) : null}
+                <h2 className="tj-h2 tj-wide">Your role</h2>
                 <Field label="Your role or title" error={errors.role_title}>
                   <input value={form.role_title} onChange={set('role_title')} placeholder="Outreach lead" />
                 </Field>
@@ -387,15 +438,60 @@ export default function TeamOnboardingForm({ initialEntity = '', previewKey = ''
                     <span className="tj-domain">@{entity?.work_email_domain || 'entity domain'}</span>
                   </div>
                 </Field>
-                <Field label="Shirt size" hint="Optional, for team gear.">
-                  <select value={form.shirt_size} onChange={set('shirt_size')}>
-                    {SIZES.map((s) => <option key={s} value={s}>{s || 'Choose'}</option>)}
-                  </select>
-                </Field>
               </div>
             ) : null}
 
             {step === 2 ? (
+              <div className="tj-grid">
+                <h2 className="tj-h2 tj-wide">Clothing sizes</h2>
+                <p className="tj-note tj-wide">For team shirts, hoodies and gear.</p>
+                <Field label="Shirt" error={errors.shirt_size}>
+                  <select value={form.shirt_size} onChange={set('shirt_size')}>
+                    {SIZES.map((v) => <option key={v} value={v}>{v || 'Choose'}</option>)}
+                  </select>
+                </Field>
+                <Field label="Hoodie or jacket" hint="Optional.">
+                  <select value={form.hoodie_size} onChange={set('hoodie_size')}>
+                    {SIZES.map((v) => <option key={v} value={v}>{v || 'Choose'}</option>)}
+                  </select>
+                </Field>
+                <Field label="Pants" hint="Waist and length, or a letter size. Optional.">
+                  <input value={form.pants_size} onChange={set('pants_size')} maxLength={20} placeholder="32 x 32 or M" />
+                </Field>
+                <div className="tj-pair">
+                  <Field label="Shoe" hint="Optional.">
+                    <select value={form.shoe_size} onChange={set('shoe_size')}>
+                      {SHOES.map((v) => <option key={v} value={v}>{v || 'Size'}</option>)}
+                    </select>
+                  </Field>
+                  <Field label="Fit">
+                    <select value={form.shoe_kind} onChange={set('shoe_kind')}>
+                      <option value="Men's">Men's</option>
+                      <option value="Women's">Women's</option>
+                    </select>
+                  </Field>
+                </div>
+                <h2 className="tj-h2 tj-wide">What are you into?</h2>
+                <Field label="Check anything that fits" hint="Optional. Helps us match you to the right work." wide>
+                  <div className="tj-boxes">
+                    {INTERESTS.map((v) => {
+                      const on = form.interests.includes(v);
+                      return (
+                        <label key={v} className={`tj-box${on ? ' is-on' : ''}`}>
+                          <input type="checkbox" checked={on} onChange={() => toggle('interests', v)} />
+                          <span>{v}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </Field>
+                <Field label="Anything else you’re into or good at?" hint="Optional." wide>
+                  <textarea rows={3} value={form.interests_notes} onChange={set('interests_notes')} maxLength={600} placeholder="Run clubs, DJing, event hosting, graphic design" />
+                </Field>
+              </div>
+            ) : null}
+
+            {step === 3 ? (
               <div className="tj-grid">
                 <h2 className="tj-h2 tj-wide">Emergency contact</h2>
                 <Field label="Name" error={errors.emergency_contact_name}>
@@ -421,7 +517,7 @@ export default function TeamOnboardingForm({ initialEntity = '', previewKey = ''
               </div>
             ) : null}
 
-            {step === 3 ? (
+            {step === 4 ? (
               <div className="tj-grid">
                 <h2 className="tj-h2 tj-wide">Read and sign the team agreement</h2>
                 <p className="tj-note tj-wide">Scroll to the end to unlock signing. Your name, role and entity are already filled in.</p>
@@ -457,7 +553,7 @@ export default function TeamOnboardingForm({ initialEntity = '', previewKey = ''
             <div className="tj-actions">
               {step > 0 ? <button type="button" className="tj-btn tj-ghost" onClick={() => go(step - 1)}>Back</button> : <span />}
               <button type="submit" className="tj-btn" disabled={status === 'submitting'}>
-                {step < 3 ? 'Continue' : status === 'submitting' ? 'Signing…' : 'Sign and submit'}
+                {step < LAST ? 'Continue' : status === 'submitting' ? 'Signing…' : 'Sign and submit'}
               </button>
             </div>
           </form>

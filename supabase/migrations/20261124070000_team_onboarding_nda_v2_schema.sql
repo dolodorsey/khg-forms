@@ -34,18 +34,23 @@ alter table public.team_onboarding_entities enable row level security;
 drop policy if exists "team_onboarding_entities service all" on public.team_onboarding_entities;
 create policy "team_onboarding_entities service all" on public.team_onboarding_entities for all to service_role using (true) with check (true);
 
+-- The top 15 entities teammates can pick (Nov 25 ask). Every name spelled out.
 insert into public.team_onboarding_entities(slug, display_name, work_email_domain, mail_ready, sort_order, notes) values
- ('kollective','The Kollective Hospitality Group (Dr. Dorsey)','thekollectivehospitality.com',false,10,'Google Workspace; seats needed for real mailboxes'),
+ ('dorsey','Dr. Dorsey and The Kollective Hospitality Group','thekollectivehospitality.com',false,10,'Google Workspace; seats needed for real mailboxes'),
  ('sos','S.O.S. (Superheroes on Standby)','superherosonstandby.com',true,20,'Hostinger'),
  ('good-times','Good Times','thegoodtimesworldwide.com',true,30,'Hostinger'),
  ('atf','American Track and Field','americantnf.com',true,40,'Google Workspace'),
  ('sole-exchange','Sole Exchange',null,false,50,'No mail domain yet'),
  ('inner-circle','The Inner Circle','houstatlantavegas.com',false,60,'Mailbox built, domain has no mail host yet'),
  ('memory-machine','Memory Machine',null,false,70,'No mail domain on file'),
- ('events','Kollective Events','thekollectivehospitality.com',false,80,'Shares the flagship domain'),
- ('clothing','Clothing (Bodega, Stush)','stushusa.com',false,90,'Domain has no mail host yet'),
- ('casper-group','The Casper Group','caspergroupworldwide.com',true,100,'Hostinger'),
- ('members-elite','Members Elite',null,false,110,'No mail domain on file')
+ ('ball-series','The Ball Series',null,false,80,'No mail domain on file'),
+ ('santa-in-atlanta','Santa in Atlanta',null,false,90,'No mail domain on file'),
+ ('clothing','Clothing Brands (STUSH, FENYX, Bodega)','stushusa.com',false,100,'Domain has no mail host yet'),
+ ('bevco','BEVCO Beverages (Infinity Water, Pronto Energy)',null,false,110,'No mail domain on file'),
+ ('hood-news','Hood News',null,false,120,'No mail domain on file'),
+ ('the-university','The University',null,false,130,'No mail domain on file'),
+ ('members-elite','Member''s Elite',null,false,140,'No mail domain on file'),
+ ('kollective-events','Kollective Hospitality Events','thekollectivehospitality.com',false,150,'Shares the flagship domain')
 on conflict (slug) do nothing;
 
 create table if not exists public.team_work_email_requests (
@@ -75,6 +80,14 @@ alter table public.team_members
   add column if not exists preferred_contact_method text,
   add column if not exists best_time_to_reach text,
   add column if not exists shirt_size text,
+  add column if not exists hoodie_size text,
+  add column if not exists pants_size text,
+  add column if not exists shoe_size text,
+  add column if not exists residence_city text,
+  add column if not exists residence_state text,
+  add column if not exists involved_entities text[] default '{}',
+  add column if not exists interests text[] default '{}',
+  add column if not exists interests_notes text,
   add column if not exists requested_work_email text,
   add column if not exists onboarding_source text,
   add column if not exists onboarding_submitted_at timestamptz;
@@ -118,6 +131,8 @@ declare
   v_signed_local date;
   v_request_status text;
   v_address text;
+  v_involved text[];
+  v_interests text[];
 begin
   select * into v_ver from team_nda_versions where is_current;
   if not found then return jsonb_build_object('ok',false,'error','No current NDA version'); end if;
@@ -130,8 +145,19 @@ begin
   if length(v_name) < 3 or v_name !~ ' ' then return jsonb_build_object('ok',false,'error','Enter your full legal name (first and last).'); end if;
   if v_email !~ '^[^@\s]+@[^@\s]+\.[^@\s]+$' then return jsonb_build_object('ok',false,'error','Enter a valid personal email.'); end if;
   if length(regexp_replace(v_phone,'[^0-9]','','g')) < 10 then return jsonb_build_object('ok',false,'error','Enter a valid mobile number.'); end if;
+  select coalesce(array_agg(distinct x), '{}') into v_involved
+    from jsonb_array_elements_text(case when jsonb_typeof(p->'involved_entities') = 'array' then p->'involved_entities' else '[]'::jsonb end) x
+    where x in (select slug from team_onboarding_entities where active);
+  if cardinality(v_involved) = 0 then return jsonb_build_object('ok',false,'error','Check at least one entity you want to be involved with.'); end if;
   select * into v_ent from team_onboarding_entities where slug = p->>'entity_slug' and active;
-  if not found then return jsonb_build_object('ok',false,'error','Choose the entity you work with.'); end if;
+  if not found then return jsonb_build_object('ok',false,'error','Choose your main entity.'); end if;
+  if not (v_ent.slug = any(v_involved)) then v_involved := array_append(v_involved, v_ent.slug); end if;
+  select coalesce(array_agg(left(trim(x), 60)), '{}') into v_interests
+    from (select x from jsonb_array_elements_text(case when jsonb_typeof(p->'interests') = 'array' then p->'interests' else '[]'::jsonb end) x limit 20) t
+    where length(trim(x)) > 0;
+  if length(trim(coalesce(p->>'residence_city',''))) < 2 or length(trim(coalesce(p->>'residence_state',''))) < 2 then
+    return jsonb_build_object('ok',false,'error','Enter the city and state where you live.');
+  end if;
   if length(trim(coalesce(p->>'role_title',''))) < 2 then return jsonb_build_object('ok',false,'error','Enter your role.'); end if;
   if length(trim(coalesce(p->>'mailing_address',''))) < 8 then return jsonb_build_object('ok',false,'error','Enter your mailing address.'); end if;
   if length(trim(coalesce(p->>'emergency_contact_name',''))) < 2 or length(regexp_replace(coalesce(p->>'emergency_contact_phone',''),'[^0-9]','','g')) < 10 then
@@ -160,12 +186,15 @@ begin
   if v_member_id is null then
     insert into team_members(full_name, preferred_name, email, personal_email, phone, role_title, role_type, primary_brand, entity_slug,
       brands_assigned, start_date, status, mailing_address, emergency_contact_name, emergency_contact_relationship, emergency_contact_phone,
-      preferred_contact_method, best_time_to_reach, shirt_size, requested_work_email, onboarding_source, onboarding_submitted_at,
+      preferred_contact_method, best_time_to_reach, shirt_size, hoodie_size, pants_size, shoe_size, residence_city, residence_state,
+      involved_entities, interests, interests_notes, requested_work_email, onboarding_source, onboarding_submitted_at,
       nda_signed, nda_signed_at, onboarding_complete, onboarding_completed_at)
     values (v_name, nullif(trim(p->>'preferred_name'),''), v_email, v_email, v_phone, trim(p->>'role_title'), 'team', v_ent.slug, v_ent.slug,
-      array[v_ent.slug], nullif(p->>'start_date','')::date, 'pending', trim(p->>'mailing_address'), trim(p->>'emergency_contact_name'),
+      v_involved, nullif(p->>'start_date','')::date, 'pending', trim(p->>'mailing_address'), trim(p->>'emergency_contact_name'),
       nullif(trim(p->>'emergency_contact_relationship'),''), p->>'emergency_contact_phone', nullif(p->>'preferred_contact_method',''),
-      nullif(trim(p->>'best_time_to_reach'),''), nullif(p->>'shirt_size',''), v_address, 'onboarding_link', now(),
+      nullif(trim(p->>'best_time_to_reach'),''), nullif(p->>'shirt_size',''), nullif(p->>'hoodie_size',''), nullif(left(trim(p->>'pants_size'),20),''),
+      nullif(left(trim(p->>'shoe_size'),20),''), trim(p->>'residence_city'), trim(p->>'residence_state'),
+      v_involved, v_interests, nullif(left(trim(p->>'interests_notes'),600),''), v_address, 'onboarding_link', now(),
       true, now(), true, now())
     returning id into v_member_id;
   else
@@ -177,7 +206,15 @@ begin
       phone = coalesce(phone, v_phone),
       entity_slug = coalesce(entity_slug, v_ent.slug),
       primary_brand = coalesce(primary_brand, v_ent.slug),
-      brands_assigned = case when v_ent.slug = any(coalesce(brands_assigned,'{}')) then brands_assigned else array_append(coalesce(brands_assigned,'{}'), v_ent.slug) end,
+      brands_assigned = (select array_agg(distinct b) from unnest(coalesce(brands_assigned,'{}') || v_involved) b),
+      involved_entities = (select array_agg(distinct b) from unnest(coalesce(involved_entities,'{}') || v_involved) b),
+      interests = case when cardinality(coalesce(interests,'{}')) = 0 then v_interests else interests end,
+      interests_notes = coalesce(interests_notes, nullif(left(trim(p->>'interests_notes'),600),'')),
+      hoodie_size = coalesce(hoodie_size, nullif(p->>'hoodie_size','')),
+      pants_size = coalesce(pants_size, nullif(left(trim(p->>'pants_size'),20),'')),
+      shoe_size = coalesce(shoe_size, nullif(left(trim(p->>'shoe_size'),20),'')),
+      residence_city = coalesce(residence_city, trim(p->>'residence_city')),
+      residence_state = coalesce(residence_state, trim(p->>'residence_state')),
       start_date = coalesce(start_date, nullif(p->>'start_date','')::date),
       mailing_address = coalesce(mailing_address, trim(p->>'mailing_address')),
       emergency_contact_name = coalesce(emergency_contact_name, trim(p->>'emergency_contact_name')),
@@ -232,7 +269,8 @@ grant execute on function public.submit_team_onboarding(jsonb) to service_role;
 
 create or replace view public.v_team_onboarding_board with (security_invoker = true) as
 select m.id member_id, m.full_name, m.preferred_name, m.entity_slug, e.display_name entity, m.role_title, m.status member_status,
-  m.phone, m.personal_email, m.onboarding_submitted_at, n.id nda_id, n.signed_at, n.signed_date_local, n.nda_version_key,
+  m.phone, m.personal_email, m.residence_city, m.residence_state, m.involved_entities, m.interests,
+  m.shirt_size, m.hoodie_size, m.pants_size, m.shoe_size, m.onboarding_submitted_at, n.id nda_id, n.signed_at, n.signed_date_local, n.nda_version_key,
   n.pdf_storage_path, n.company_countersigned_at, w.requested_address work_email, w.status work_email_status
 from team_members m
 left join team_onboarding_entities e on e.slug = m.entity_slug
