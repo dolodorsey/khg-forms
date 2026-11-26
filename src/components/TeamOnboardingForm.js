@@ -146,7 +146,7 @@ function Field({ label, hint, error, children, wide }) {
   );
 }
 
-export default function TeamOnboardingForm({ initialEntity = '', previewKey = '' }) {
+export default function TeamOnboardingForm({ initialEntity = '', previewKey = '', inviteToken = '' }) {
   const [config, setConfig] = useState(null);
   const [loadError, setLoadError] = useState('');
   const [form, setForm] = useState({ ...blank, entity_slug: initialEntity, involved_entities: initialEntity ? [initialEntity] : [] });
@@ -273,6 +273,7 @@ export default function TeamOnboardingForm({ initialEntity = '', previewKey = ''
         body: JSON.stringify({
           action: 'submit',
           preview_key: previewKey || undefined,
+          invite_token: inviteToken || undefined,
           full_name: squash(form.full_name),
           preferred_name: squash(form.preferred_name),
           phone: formatPhone(form.phone),

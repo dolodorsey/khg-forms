@@ -12,5 +12,6 @@ export const viewport = { width: 'device-width', initialScale: 1, viewportFit: '
 export default function TeamJoinPage({ searchParams }) {
   const entity = typeof searchParams?.entity === 'string' ? searchParams.entity : '';
   const preview = typeof searchParams?.preview === 'string' ? searchParams.preview : '';
-  return <TeamOnboardingForm initialEntity={entity} previewKey={preview} />;
+  const invite = typeof searchParams?.invite === 'string' && /^[0-9a-f]{32}$/.test(searchParams.invite) ? searchParams.invite : '';
+  return <TeamOnboardingForm initialEntity={entity} previewKey={preview} inviteToken={invite} />;
 }

@@ -109,6 +109,26 @@ alter table public.team_ndas
   add column if not exists company_countersigned_at timestamptz,
   add column if not exists company_countersigned_by text;
 
+-- Personal invite links: each existing teammate gets their own link (?invite=<token>) so their
+-- submission attaches to their existing roster row and their real email replaces a placeholder.
+create table if not exists public.team_onboarding_invites (
+  token text primary key default encode(extensions.gen_random_bytes(16), 'hex'),
+  member_id uuid not null references public.team_members(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  used_at timestamptz
+);
+create unique index if not exists team_onboarding_invites_one_open on public.team_onboarding_invites(member_id) where used_at is null;
+alter table public.team_onboarding_invites enable row level security;
+drop policy if exists "team_onboarding_invites service all" on public.team_onboarding_invites;
+create policy "team_onboarding_invites service all" on public.team_onboarding_invites for all to service_role using (true) with check (true);
+
+-- One open invite for every active teammate still missing a real email.
+insert into public.team_onboarding_invites(member_id)
+select m.id from public.team_members m
+where m.status = 'active' and coalesce(m.is_ai_persona,false) = false
+  and (m.email ilike '%@pending.invalid' or m.email is null)
+  and not exists (select 1 from public.team_onboarding_invites i where i.member_id = m.id and i.used_at is null);
+
 create or replace function public.submit_team_onboarding(p jsonb)
 returns jsonb
 language plpgsql
@@ -133,6 +153,7 @@ declare
   v_address text;
   v_involved text[];
   v_interests text[];
+  v_invite team_onboarding_invites%rowtype;
 begin
   select * into v_ver from team_nda_versions where is_current;
   if not found then return jsonb_build_object('ok',false,'error','No current NDA version'); end if;
@@ -179,9 +200,21 @@ begin
   v_address := case when v_ent.work_email_domain is not null then v_local_part || '@' || v_ent.work_email_domain end;
   v_request_status := case when v_ent.work_email_domain is null then 'domain_not_ready' else 'awaiting_founder_approval' end;
 
-  select id into v_member_id from team_members
-   where lower(coalesce(personal_email,'')) = v_email or lower(coalesce(email,'')) = v_email
-   order by (status='active') desc, created_at limit 1;
+  if coalesce(p->>'invite_token','') ~ '^[0-9a-f]{32}$' then
+    select * into v_invite from team_onboarding_invites where token = p->>'invite_token' and used_at is null for update;
+    if not found then return jsonb_build_object('ok',false,'error','This personal link was already used. Ask Dr. Dorsey''s office for a new one.'); end if;
+    v_member_id := v_invite.member_id;
+    -- The invite proves who this is: their real email replaces a placeholder so they can sign in.
+    update team_members set
+      email = case when email ilike '%@pending.invalid' or email is null then v_email else email end,
+      full_name = case when full_name !~ ' ' then v_name else full_name end
+    where id = v_member_id;
+    update team_onboarding_invites set used_at = now() where token = v_invite.token;
+  else
+    select id into v_member_id from team_members
+     where lower(coalesce(personal_email,'')) = v_email or lower(coalesce(email,'')) = v_email
+     order by (status='active') desc, created_at limit 1;
+  end if;
 
   if v_member_id is null then
     insert into team_members(full_name, preferred_name, email, personal_email, phone, role_title, role_type, primary_brand, entity_slug,
@@ -255,7 +288,7 @@ begin
 
   insert into team_portal_submissions(submission_type, brand_key, payload, resulted_in_id, ip, user_agent)
   values ('onboarding', v_ent.slug,
-    (p - 'signature_png' - 'nda_rendered_text' - 'preview_ok') || jsonb_build_object('member_existing', v_existing, 'nda_id', v_nda_id),
+    (p - 'signature_png' - 'nda_rendered_text' - 'preview_ok' - 'invite_token') || jsonb_build_object('member_existing', v_existing, 'nda_id', v_nda_id),
     v_member_id, nullif(p->>'ip',''), left(coalesce(p->>'user_agent',''),500));
 
   return jsonb_build_object('ok', true, 'member_id', v_member_id, 'member_existing', v_existing, 'nda_id', v_nda_id,
@@ -278,3 +311,10 @@ left join lateral (select * from team_ndas x where x.member_id = m.id and x.stat
 left join lateral (select * from team_work_email_requests r where r.member_id = m.id order by created_at desc limit 1) w on true
 where m.onboarding_source = 'onboarding_link';
 revoke all on public.v_team_onboarding_board from anon, authenticated;
+
+-- Each teammate's personal link, for Dr. Dorsey's office to send one by one.
+create or replace view public.v_team_onboarding_invite_links with (security_invoker = true) as
+select m.full_name, m.primary_brand, i.created_at, i.used_at,
+  'https://forms.thekollectivehospitality.com/team/join?invite=' || i.token as personal_link
+from team_onboarding_invites i join team_members m on m.id = i.member_id;
+revoke all on public.v_team_onboarding_invite_links from anon, authenticated;
