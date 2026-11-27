@@ -111,23 +111,37 @@ alter table public.team_ndas
 
 -- Personal invite links: each existing teammate gets their own link (?invite=<token>) so their
 -- submission attaches to their existing roster row and their real email replaces a placeholder.
+-- A named invite (member_id null, invitee_name set) is for someone on a call list who has no roster
+-- row yet: the invite is the founder's pre-approval, so their submission creates an active record.
 create table if not exists public.team_onboarding_invites (
   token text primary key default encode(extensions.gen_random_bytes(16), 'hex'),
-  member_id uuid not null references public.team_members(id) on delete cascade,
+  member_id uuid references public.team_members(id) on delete cascade,
+  invitee_name text,
+  entity_slug text,
   created_at timestamptz not null default now(),
-  used_at timestamptz
+  used_at timestamptz,
+  constraint team_onboarding_invites_who check (member_id is not null or nullif(trim(invitee_name),'') is not null)
 );
 create unique index if not exists team_onboarding_invites_one_open on public.team_onboarding_invites(member_id) where used_at is null;
+create unique index if not exists team_onboarding_invites_one_open_named on public.team_onboarding_invites(lower(invitee_name)) where used_at is null and member_id is null;
 alter table public.team_onboarding_invites enable row level security;
 drop policy if exists "team_onboarding_invites service all" on public.team_onboarding_invites;
 create policy "team_onboarding_invites service all" on public.team_onboarding_invites for all to service_role using (true) with check (true);
 
--- One open invite for every active teammate still missing a real email.
+-- One open invite for every active teammate who can't sign in yet: board sign-in needs a real email,
+-- a signed NDA and finished onboarding, and the personal link gives them all three.
 insert into public.team_onboarding_invites(member_id)
 select m.id from public.team_members m
 where m.status = 'active' and coalesce(m.is_ai_persona,false) = false
-  and (m.email ilike '%@pending.invalid' or m.email is null)
+  and (m.email ilike '%@pending.invalid' or m.email is null or not coalesce(m.nda_signed,false) or not coalesce(m.onboarding_complete,false))
   and not exists (select 1 from public.team_onboarding_invites i where i.member_id = m.id and i.used_at is null);
+
+-- Named invites for callers on the call lists (Monday Nov 30 onward) who have no roster row at all.
+-- "Omar" is left out on purpose: he is treated as the roster's "Omari", who already gets a link above.
+insert into public.team_onboarding_invites(invitee_name, entity_slug)
+select v.name, v.entity from (values ('Ali','sos'),('Brian','sos'),('Crystal','sos'),('LaCienaga','sos'),('Pops','sos'),('Tay','sos')) v(name, entity)
+where not exists (select 1 from public.team_members m where m.status = 'active' and lower(split_part(trim(m.full_name),' ',1)) = lower(v.name))
+  and not exists (select 1 from public.team_onboarding_invites i where i.member_id is null and i.used_at is null and lower(i.invitee_name) = lower(v.name));
 
 create or replace function public.submit_team_onboarding(p jsonb)
 returns jsonb
@@ -223,13 +237,15 @@ begin
       involved_entities, interests, interests_notes, requested_work_email, onboarding_source, onboarding_submitted_at,
       nda_signed, nda_signed_at, onboarding_complete, onboarding_completed_at)
     values (v_name, nullif(trim(p->>'preferred_name'),''), v_email, v_email, v_phone, trim(p->>'role_title'), 'team', v_ent.slug, v_ent.slug,
-      v_involved, nullif(p->>'start_date','')::date, 'pending', trim(p->>'mailing_address'), trim(p->>'emergency_contact_name'),
+      v_involved, nullif(p->>'start_date','')::date, case when v_invite.token is not null then 'active' else 'pending' end, trim(p->>'mailing_address'), trim(p->>'emergency_contact_name'),
       nullif(trim(p->>'emergency_contact_relationship'),''), p->>'emergency_contact_phone', nullif(p->>'preferred_contact_method',''),
       nullif(trim(p->>'best_time_to_reach'),''), nullif(p->>'shirt_size',''), nullif(p->>'hoodie_size',''), nullif(left(trim(p->>'pants_size'),20),''),
       nullif(left(trim(p->>'shoe_size'),20),''), trim(p->>'residence_city'), trim(p->>'residence_state'),
       v_involved, v_interests, nullif(left(trim(p->>'interests_notes'),600),''), v_address, 'onboarding_link', now(),
       true, now(), true, now())
     returning id into v_member_id;
+    -- A named invite now points at the record it created.
+    if v_invite.token is not null then update team_onboarding_invites set member_id = v_member_id where token = v_invite.token; end if;
   else
     v_existing := true;
     -- Existing record: only fill fields that are empty, so nobody can overwrite a teammate's details by typing their email.
@@ -314,7 +330,13 @@ revoke all on public.v_team_onboarding_board from anon, authenticated;
 
 -- Each teammate's personal link, for Dr. Dorsey's office to send one by one.
 create or replace view public.v_team_onboarding_invite_links with (security_invoker = true) as
-select m.full_name, m.primary_brand, i.created_at, i.used_at,
+select coalesce(m.full_name, i.invitee_name) as full_name,
+  coalesce(m.primary_brand, i.entity_slug) as primary_brand,
+  (i.member_id is null) as no_roster_row_yet,
+  (select count(*) from call_list c
+     where lower(trim(c.caller)) in (lower(trim(coalesce(i.invitee_name,''))), lower(split_part(trim(coalesce(m.full_name,'')),' ',1)), lower(trim(coalesce(m.preferred_name,''))))
+       and c.due_at >= now() - interval '1 day' and c.due_at < now() + interval '7 days') as calls_next_7_days,
+  i.created_at, i.used_at,
   'https://forms.thekollectivehospitality.com/team/join?invite=' || i.token as personal_link
-from team_onboarding_invites i join team_members m on m.id = i.member_id;
+from team_onboarding_invites i left join team_members m on m.id = i.member_id;
 revoke all on public.v_team_onboarding_invite_links from anon, authenticated;
